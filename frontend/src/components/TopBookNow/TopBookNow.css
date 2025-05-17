@@ -1,0 +1,15 @@
+.top-hotels {
+  padding: 2rem;
+}
+
+.hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.see-all {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+}

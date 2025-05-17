@@ -1,0 +1,16 @@
+.footer {
+  background: black;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.footer-links h4 {
+  margin-bottom: 0.5rem;
+}
