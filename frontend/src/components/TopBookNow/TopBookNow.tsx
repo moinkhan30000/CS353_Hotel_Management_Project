@@ -16,7 +16,6 @@ const hotels = [
     price: 9000,
     image: sanctuaryImage,
   },
-  // Add more items based on your mockup
 ];
 
 const TopBookNow = () => {
