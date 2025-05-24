@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './LoginManagerPage.css';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 
@@ -8,6 +9,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,8 +20,8 @@ const LoginPage = () => {
     }
 
     if (email === 'test@example.com' && password === 'password123') {
-      alert('Login successful!');
       setError('');
+      setTimeout(() => navigate('/managerdashboard'), 2000);
     } else {
       setError('Invalid email or password.');
     }
