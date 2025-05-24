@@ -8,6 +8,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import RegisterChoicePage from './pages/RegisterChoicePage';
 import RegisterManagerPage from './pages/RegisterManagerPage';
 import RegisterGuestPage from './pages/RegisterGuestPage';
+import Contact from './pages/Contact';
 function App() {
   return (
     <Router>
@@ -19,6 +20,7 @@ function App() {
         <Route path="/register" element={<RegisterChoicePage />} />
         <Route path="/register/manager" element={<RegisterManagerPage />} />
         <Route path="/register/guest" element={<RegisterGuestPage />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>
