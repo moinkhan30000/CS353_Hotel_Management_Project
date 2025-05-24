@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './LoginPage.css';
+import './LoginManagerPage.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 
@@ -30,7 +30,7 @@ const LoginPage = () => {
       <Header hideLogin />
       <div className="login-container">
         <div className="login-box">
-          <h2>Login</h2>
+          <h2>Login as Manager</h2>
           <form onSubmit={handleLogin}>
             <input
               type="email"

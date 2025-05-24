@@ -1,0 +1,36 @@
+.choice-container {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.choice-buttons button {
+  margin: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 1.5rem;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+.choice-container h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+
+.choice-buttons button:hover {
+  transform: scale(1.05);
+}

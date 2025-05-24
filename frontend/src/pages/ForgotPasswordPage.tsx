@@ -28,7 +28,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <>
-      <Header hideLogin />
+      <Header />
       <div className="forgot-container">
         <div className="forgot-box">
           <h2>Forgot Password</h2>
