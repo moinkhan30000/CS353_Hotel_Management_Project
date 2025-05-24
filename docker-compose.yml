@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: hotel
     ports:
-      - "3307:3306"  # Use 3307 to avoid local port conflict
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -29,10 +29,12 @@ services:
     build:
       context: ./frontend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules  # Prevents host conflict
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/vite.config.ts:/app/vite.config.ts     
+      - ./frontend/index.html:/app/index.html             
     working_dir: /app
-    command: npm run dev
+    command: npm run dev -- --host
     ports:
       - "5173:5173"
     depends_on:

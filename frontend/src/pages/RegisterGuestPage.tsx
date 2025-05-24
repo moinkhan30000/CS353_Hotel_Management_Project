@@ -19,6 +19,16 @@ const RegisterGuestPage = () => {
   const [date_of_bith, setDateofBirth] = useState('');
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
   const nameRegex = /^[\p{L}]+$/u;
+    const isValidIdentity = (id: string) => /^[1-9][0-9]{10}$/.test(id);
+  const isValidDob = (date: string) => {
+    const dobDate = new Date(date);
+    const today = new Date();
+    const age = today.getFullYear() - dobDate.getFullYear();
+    const hasBirthdayPassed =
+      today.getMonth() > dobDate.getMonth() ||
+      (today.getMonth() === dobDate.getMonth() && today.getDate() >= dobDate.getDate());
+    return age > 16 || (age === 16 && hasBirthdayPassed);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +47,14 @@ const RegisterGuestPage = () => {
       setError('Phone number must be 10 digits and not start with 0.');
       return;
     }
+    if (!isValidIdentity(identity_number)) {
+      toast.error('Identity Number must be 11 digits and cannot start with 0.');
+      return;
+    }
+    if (!isValidDob(date_of_bith)) {
+      toast.error('You must be at least 16 years old.');
+      return;
+    }
 
     if (!passwordRegex.test(password)) {
       setError(
@@ -51,7 +69,7 @@ const RegisterGuestPage = () => {
     }
 
     
-    // ✅ Valid - show toast and redirect
+
     setError('');
     toast.success('Guest registered successfully!');
     setTimeout(() => navigate('/login'), 2000);
