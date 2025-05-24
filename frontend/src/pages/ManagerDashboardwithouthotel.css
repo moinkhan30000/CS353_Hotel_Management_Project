@@ -1,11 +1,60 @@
 
-/* registerHotel.css */
 
-.register-card {
+.manager-dashboard-container {
+  min-height: 100vh;
+  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  color: rgb(0, 0, 0);
+  font-family: sans-serif;
+}
+
+.manager-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.manager-user-info {
+  border: 2px solid black;
+  padding: 0.25rem 1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manager-welcome-section {
+  max-width: 1500px;
+  padding: 0 2rem;
+}
+
+.manager-welcome-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.manager-dashboard-main {
+  background-color: white;
+  color: black;
+  padding: 2rem 6rem;
+  min-height: 33rem;
+  border-radius: 1.5rem;
+  margin: 4rem;
+}
+
+.manager-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+
+.manager-register-card {
   background: rgba(240, 240, 240, 0.8);
   border-radius: 1.5rem;
   padding: 2rem;
-  width: 100%;
   max-width: 500px;
   margin: 2rem auto;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -13,24 +62,7 @@
   backdrop-filter: blur(10px);
 }
 
-.manage-account{
-  background-color: #f3f4f6;
-  padding: 2rem;
-  border-radius: 1.5rem;
-  width: 100%;
-  max-width: 500px;
-  margin: 2rem auto;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  
-}
-
-.register-card h2 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-.register-box {
+.manager-register-box {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,9 +75,7 @@
   margin: 0 auto 2rem;
 }
 
-
-
-.register-button {
+.manager-register-button {
   background-color: black;
   color: white;
   padding: 0.75rem 1.5rem;
@@ -60,64 +90,83 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.register-button:hover {
+.manager-register-button:hover {
   background-color: #1a1a1a;
   transform: translateY(-2px);
 }
 
-.btn-icon {
+.manager-btn-icon {
   font-size: 1.2rem;
 }
-.welcome-section {
-  max-width: 1500px;
-  margin:  0 0 auto;
-  padding: 0 2rem; 
-}
 
-.dashboard-container {
-  min-height: 100vh;
-  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
-  color: rgb(0, 0, 0);
-  font-family: sans-serif;
-}
 
-.dashboard-header {
+.manager-account-box {
+  background-color: #f3f4f6;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  max-width: 500px;
+  margin: 2rem auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.manager-custom-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  background-color: #0072b1;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  position: relative;
+  z-index: 10;
 }
-.user-info {
-  border: 2px solid black;
-  padding: 0.25rem 1rem;
-  border-radius: 9999px;
+
+.manager-header-left h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.manager-header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.manager-header-home {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.manager-user {
+  position: relative;
+  background: white;
+  color: black;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 500;
 }
 
-.dashboard-main {
-  background-color: white;
+.manager-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.manager-dropdown button {
+  background: none;
+  border: none;
   color: black;
-  padding: 2rem 6rem;
-    min-height: 32.999rem;
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
-  border-bottom-left-radius: 1.5rem;
-  margin: 4rem;
-}
-
-.welcome-title {
-  font-size: 1.875rem;
   font-weight: bold;
-  margin-bottom: 2rem;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem;
-   
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: left;
 }

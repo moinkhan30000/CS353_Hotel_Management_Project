@@ -1,44 +1,70 @@
 import React, { useState } from 'react';
 import './ManagerDashboardwithouthotel.css';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
+import Footer from '../components/Footer/Footer'; 
 import { useNavigate } from 'react-router-dom';
+
 const ManagerDashboardwoHotel = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
- return (
-    <div className="dashboard-container">
-        <header className="dashboard-header">
-            <h1 className="brand">HORIZONSTAY</h1>
-            <div className="user-info">
-                <span>Moin Khan</span>
-                <span>👤</span>
-            </div>
-        </header>
-        <div className="welcome-section">
-            <h2 className="welcome-title">Welcome</h2>
+  const handleLogout = () => {
+
+    localStorage.removeItem('hotelRegistered');
+    navigate('/');
+  };
+
+  return (
+    <>
+      <header className="manager-custom-header">
+        <div className="manager-header-left" onClick={() => navigate('/managerdashboard')}>
+          <h1>HORIZONSTAY</h1>
         </div>
-        <main className="dashboard-main">
-            <div className="grid-container">
-                <div className="register-card">
-                    <h2>Register Hotel</h2>
-                    <div className="register-box">
-                        <div className="plus-icon">+</div>
-                    </div>
-                    <button className="register-button" onClick={() => navigate('/register/hotel')}>
-                        <span className="btn-icon">🏨</span> Register Hotel
-                    </button>
-                </div>
-                <div className="manage-account">
-                    <h2>Manage Account</h2>
-                    <li><a href="#">Personal Details</a></li>
+        <div className="manager-header-right">
+          <span className="manager-header-home" onClick={() => navigate('/managerdashboard')}>Home</span>
+          <div className="manager-user" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <span>Moin Khan</span>
+            <span>👤</span>
+            {dropdownOpen && (
+              <div className="manager-dropdown">
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
 
-                </div>
+      <main className="manager-dashboard-container">
+        <div className="manager-welcome-section">
+          <h2 className="manager-welcome-title">Welcome</h2>
+        </div>
+
+        <div className="manager-dashboard-main">
+          <div className="manager-grid-container">
+            <div className="manager-register-card">
+              <h2>Register Hotel</h2>
+              <div className="manager-register-box">
+                <div className="plus-icon">+</div>
+              </div>
+              <button
+                className="manager-register-button"
+                onClick={() => navigate('/register/hotel')}
+              >
+                <span className="manager-btn-icon">🏨</span> Register Hotel
+              </button>
             </div>
-        </main>
-        <Footer/>
-    </div>
-    
+
+            <div className="manager-account-box">
+              <h2>Manage Account</h2>
+              <ul>
+                <li><a href="#">Personal Details</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </>
   );
 };
 
