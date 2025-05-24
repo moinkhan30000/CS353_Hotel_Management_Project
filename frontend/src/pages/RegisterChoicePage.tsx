@@ -8,7 +8,7 @@ const RegisterChoicePage = () => {
 
   return (
     <>
-      <Header hideLogin />
+      <Header hideRegister />
       <div className="choice-container">
         <h2>Select Registration Type</h2>
         <div className="choice-buttons">
