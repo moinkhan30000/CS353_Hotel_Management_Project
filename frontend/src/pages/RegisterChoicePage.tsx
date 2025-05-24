@@ -14,6 +14,7 @@ const RegisterChoicePage = () => {
         <div className="choice-buttons">
           <button onClick={() => navigate('/register/guest')}>Register as Guest</button>
           <button onClick={() => navigate('/register/manager')}>Register as Manager</button>
+          <button onClick={() => navigate('/register/hotel')}>Register as Hotel</button>
         </div>
       </div>
       <Footer />

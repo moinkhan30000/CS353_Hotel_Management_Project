@@ -8,6 +8,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import RegisterChoicePage from './pages/RegisterChoicePage';
 import RegisterManagerPage from './pages/RegisterManagerPage';
 import RegisterGuestPage from './pages/RegisterGuestPage';
+import HotelRegisterPage from './pages/HotelRegisterPage';
+
 import Contact from './pages/Contact';
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
         <Route path="/register/manager" element={<RegisterManagerPage />} />
         <Route path="/register/guest" element={<RegisterGuestPage />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/register/hotel" element={<HotelRegisterPage />} />
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>
