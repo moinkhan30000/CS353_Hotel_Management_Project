@@ -11,6 +11,7 @@ import RegisterManagerPage from './pages/RegisterManagerPage';
 import RegisterGuestPage from './pages/RegisterGuestPage';
 import HotelRegisterPage from './pages/HotelRegisterPage';
 import ManagerDashboard from './pages/Managerdashboard';
+import ManagerDashboardwoHotel from './pages/ManagerDashboardwithouthotel';
 import Contact from './pages/Contact';
 import LoginchoicePage from './pages/Loginchoice';
 function App() {
@@ -29,7 +30,8 @@ function App() {
         <Route path="/register/hotel" element={<HotelRegisterPage />} />
         <Route path="/login/manager" element={<LoginManagerPage />} />
         <Route path="/login/guest" element={<LoginGuestPage />} />
-        <Route path="/managerdashboard" element={<ManagerDashboard />} />
+        <Route path="/managerdashboard" element={<ManagerDashboardwoHotel />} />
+        
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>
