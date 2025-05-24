@@ -1,0 +1,139 @@
+/* UserDashboard.css */
+.dashboard-container {
+  width: 100%;
+  padding: 20px;
+  background-color: #f4f7fc;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #004d99;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.user-info {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.welcome-section {
+  margin-top: 20px;
+}
+
+.welcome-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.dashboard-main {
+  margin-top: 30px;
+}
+
+.dashboard-box-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: nowrap;  /* Ensure no wrapping and force them in one row */
+}
+
+.dashboard-box {
+  flex: 1; /* This makes sure that the boxes take equal width and are placed next to each other */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-box:hover {
+  background-color: #e0e0e0;
+}
+
+.dashboard-box h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.booking-grid, .payment-grid, .reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.booking-box, .payment-box, .review-box {
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.booking-box.upcoming {
+  border-left: 5px solid #28a745;
+}
+
+.booking-box.past {
+  border-left: 5px solid #dc3545;
+}
+
+.payment-box.upcoming {
+  border-left: 5px solid #007bff;
+}
+
+.payment-box.paid {
+  border-left: 5px solid #28a745;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.review-box {
+  font-style: italic;
+  color: #555;
+}
+
+.review-box h4 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.review-box p {
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-box-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .dashboard-box {
+    width: 100%;
+  }
+}

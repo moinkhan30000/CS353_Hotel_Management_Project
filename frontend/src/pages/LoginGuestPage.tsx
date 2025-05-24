@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import './LoginGuestPage.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
@@ -8,6 +8,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +18,10 @@ const LoginPage = () => {
       return;
     }
 
-    if (email === 'test@example.com' && password === 'password123') {
+    if (email === 'test@e' && password === '123') {
       alert('Login successful!');
       setError('');
+      navigate("/guest-dashboard")
     } else {
       setError('Invalid email or password.');
     }
