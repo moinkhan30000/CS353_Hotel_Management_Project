@@ -16,6 +16,8 @@ import GuestDashboard from './pages/GuestDashboard';
 import ManagerProfilePage from './pages/ManagerProfile';
 import Contact from './pages/Contact';
 import LoginchoicePage from './pages/Loginchoice';
+import ManageBookingPage from './pages/ManageBookingPage';
+import EditHotelImagesPage from './pages/EditHotelImagesPage';
 function App() {
   return (
     <Router>
@@ -28,7 +30,7 @@ function App() {
         <Route path="/register/manager" element={<RegisterManagerPage />} />
         <Route path="/register/guest" element={<RegisterGuestPage />} />
         <Route path="/contact" element={<Contact />} />
-
+        <Route path="/manage-bookings" element={<ManageBookingPage />} />
         <Route path="/register/hotel" element={<HotelRegisterPage />} />
         <Route path="/login/manager" element={<LoginManagerPage />} />
         <Route path="/login/guest" element={<LoginGuestPage />} />
@@ -36,6 +38,7 @@ function App() {
         <Route path="/managerhoteldashboard" element={<ManagerDashboard />} />
         <Route path="/managerprofile" element={<ManagerProfilePage />} />
         <Route path="/guest-dashboard" element={<GuestDashboard />} />
+        <Route path="/edit-hotel-images" element={<EditHotelImagesPage />} />
 
 
 

@@ -83,9 +83,9 @@ const ManagerDashboard = () => {
             <h3>Manage Account</h3>
             <ul>
               <li><a href="/managerprofile">Personal Details</a></li>
-              <li><a href="#">Edit Hotel Images</a></li>
+              <li><a href="/edit-hotel-images">Edit Hotel Images</a></li>
               <li><a href="#">Respond to Reviews</a></li>
-              <li><a href="#">Manage Bookings</a></li>
+              <li><a href="/manage-bookings">Manage Bookings</a></li>
             </ul>
           </div>
         </div>

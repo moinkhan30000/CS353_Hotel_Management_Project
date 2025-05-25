@@ -1,19 +1,30 @@
-/* Base Container */
-.dashboard-container {
+/* =================== GLOBAL LAYOUT FIX =================== */
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+}
+
+.dashboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 4.5rem;
   background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
   background-size: cover;
   color: rgb(0, 0, 0);
   font-family: sans-serif;
-  padding-top: 4.5rem; 
 }
+
+/* =================== HEADER =================== */
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #0077b6; /* match homepage */
+  background-color: #0077b6;
   color: white;
   width: 100%;
   position: fixed;
@@ -22,7 +33,6 @@
   z-index: 1000;
 }
 
-/* Brand */
 .header-left {
   flex: 1;
 }
@@ -32,7 +42,22 @@
   font-weight: bold;
 }
 
-/* User Info Dropdown */
+.dashboard-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
 .user-info {
   position: relative;
   display: flex;
@@ -70,13 +95,13 @@
   text-decoration: underline;
 }
 
-/* Welcome Section */
+/* =================== DASHBOARD CONTENT =================== */
+
 .welcome-section {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 4.5rem 2rem 0 2rem; /* ✅ add top padding here */
+  padding: 4.5rem 2rem 0 2rem;
 }
-
 
 .welcome-title {
   font-size: 1.875rem;
@@ -84,13 +109,15 @@
   margin-bottom: 2rem;
 }
 
-/* Main Dashboard Container */
 .dashboard-main {
+  flex: 1;
   background-color: white;
   color: black;
   padding: 2rem 6rem;
   border-radius: 1.5rem;
   margin: 4rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Grid Layout */
@@ -218,7 +245,6 @@
   align-items: center;
 }
 
-/* Navigation Button for Rooms */
 .nav-button {
   background-color: #0284c7;
   color: white;
@@ -234,7 +260,16 @@
   background-color: #0369a1;
 }
 
-/* Amenities Grid */
+.nav-button.danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.nav-button.danger:hover {
+  background-color: #b91c1c;
+}
+
+/* Amenities */
 .amenities-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -266,7 +301,7 @@
   background-color: #333;
 }
 
-/* Switch for Status Toggle */
+/* Switch Toggle */
 .switch {
   position: relative;
   display: inline-block;
@@ -311,4 +346,51 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(26px);
+}
+
+/* =================== BOOKING PAGE STYLES =================== */
+
+.booking-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.booking-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  font-weight: bold;
+  background-color: #0284c7;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.booking-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.booking-readonly {
+  font-weight: 600;
+}
+
+.booking-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 0.5rem;
 }
