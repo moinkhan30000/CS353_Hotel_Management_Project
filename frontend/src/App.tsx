@@ -18,6 +18,7 @@ import Contact from './pages/Contact';
 import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
+import HotelReviewsPage from './pages/HotelReviewPage'; 
 function App() {
   return (
     <Router>
@@ -39,6 +40,7 @@ function App() {
         <Route path="/managerprofile" element={<ManagerProfilePage />} />
         <Route path="/guest-dashboard" element={<GuestDashboard />} />
         <Route path="/edit-hotel-images" element={<EditHotelImagesPage />} />
+        <Route path="/reviews" element={<HotelReviewsPage />} />
 
 
 

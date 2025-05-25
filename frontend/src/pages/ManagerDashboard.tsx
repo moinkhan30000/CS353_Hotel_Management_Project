@@ -84,7 +84,7 @@ const ManagerDashboard = () => {
             <ul>
               <li><a href="/managerprofile">Personal Details</a></li>
               <li><a href="/edit-hotel-images">Edit Hotel Images</a></li>
-              <li><a href="#">Respond to Reviews</a></li>
+              <li><a href="/reviews">Respond to Reviews</a></li>
               <li><a href="/manage-bookings">Manage Bookings</a></li>
             </ul>
           </div>
