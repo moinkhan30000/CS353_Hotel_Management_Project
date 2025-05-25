@@ -10,10 +10,10 @@ import RegisterChoicePage from './pages/RegisterChoicePage';
 import RegisterManagerPage from './pages/RegisterManagerPage';
 import RegisterGuestPage from './pages/RegisterGuestPage';
 import HotelRegisterPage from './pages/HotelRegisterPage';
-import ManagerDashboard from './pages/Managerdashboard';
+import ManagerDashboard from './pages/ManagerDashboard';
 import ManagerDashboardwoHotel from './pages/ManagerDashboardwithouthotel';
 import GuestDashboard from './pages/GuestDashboard';
-
+import ManagerProfilePage from './pages/ManagerProfile';
 import Contact from './pages/Contact';
 import LoginchoicePage from './pages/Loginchoice';
 function App() {
@@ -33,8 +33,8 @@ function App() {
         <Route path="/login/manager" element={<LoginManagerPage />} />
         <Route path="/login/guest" element={<LoginGuestPage />} />
         <Route path="/managerdashboard" element={<ManagerDashboardwoHotel />} />
-        
-
+        <Route path="/managerhoteldashboard" element={<ManagerDashboard />} />
+        <Route path="/managerprofile" element={<ManagerProfilePage />} />
         <Route path="/guest-dashboard" element={<GuestDashboard />} />
 
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './HotelRegisterPage.css';
+import { useNavigate } from 'react-router-dom';
+
 
 interface RoomData {
   type: string;
@@ -31,7 +33,7 @@ const HotelRegisterPage = () => {
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (images.length > 0) {
       console.log(`${images.length} images selected.`);
@@ -107,6 +109,7 @@ const HotelRegisterPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert('Hotel Registered Successfully!');
+    
   };
 
   return (
@@ -217,7 +220,7 @@ const HotelRegisterPage = () => {
               </div>
             )}
 
-            <button type="submit">Register</button>
+            <button type="submit" onClick={() => navigate('/managerhoteldashboard')}>Register</button>
           </form>
         </div>
       </div>

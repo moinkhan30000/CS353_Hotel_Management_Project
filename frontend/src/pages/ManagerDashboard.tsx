@@ -10,7 +10,9 @@ const ManagerDashboard = () => {
     <div className="dashboard-container">
         <header className="dashboard-header">
             <h1 className="brand">HORIZONSTAY</h1>
+            <li><a href="/">Logout</a></li>
             <div className="user-info">
+                
                 <span>Moin Khan</span>
                 <span>👤</span>
             </div>
@@ -44,7 +46,7 @@ const ManagerDashboard = () => {
             <div className="manage-account">
                 <h3>Manage Account</h3>
                 <ul>
-                    <li><a href="#">Personal Details</a></li>
+                    <li><a href="/managerprofile">Personal Details</a></li>
                     <li><a href="#">Edit Hotel Images</a></li>
                     <li><a href="#">Respond to Reviews</a></li>
                     <li><a href="#">Manage Bookings</a></li>

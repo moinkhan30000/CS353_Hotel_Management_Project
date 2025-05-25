@@ -1,0 +1,88 @@
+/* ManagerProfilePage.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 100%;
+  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+}
+
+.header {
+  background-color: #2563eb;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.managerprofilenav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+
+
+.managerprofile-button {
+  border: 2px solid #fff;
+  border-radius: 30px;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: black;
+  color: #fff;
+}
+
+.main {
+  padding: 40px;
+  text-align: center;
+}
+
+.welcome {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.profile-box {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 500px;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-box h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.profile-field {
+  background-color: #e0e0e0;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 20px;
+  color: #555;
+  font-weight: 600;
+}
+
+.edit-button {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
