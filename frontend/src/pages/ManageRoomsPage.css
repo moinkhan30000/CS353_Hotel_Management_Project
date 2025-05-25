@@ -1,0 +1,103 @@
+/* ====== Manage Rooms Page Styles ====== */
+
+.room-header {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  background-color: #e5e7eb;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: #444;
+  max-width: 850px;
+}
+
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.room-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  gap: 1rem;
+  max-width: 850px;
+  background: #f3f4f6;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.room-row input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.room-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.room-actions button {
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.room-actions button:hover {
+  background-color: #0369a1;
+}
+
+.remove-btn {
+  background-color: #dc2626 !important;
+}
+
+.remove-btn:hover {
+  background-color: #b91c1c !important;
+}
+
+.add-room {
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-room:hover {
+  background-color: #333;
+}
+
+.upload-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.upload-button {
+  background-color: #0284c7;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: #0369a1;
+}

@@ -74,9 +74,7 @@ const ManagerDashboard = () => {
                 <div>200/400</div>
               </div>
             </div>
-            <div className="see-more">
-              <a href="#">See more</a>
-            </div>
+
           </div>
 
           <div className="manage-account">

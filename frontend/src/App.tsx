@@ -19,6 +19,7 @@ import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
+import ManageRoomsPage from './pages/ManageRoomsPAge';
 function App() {
   return (
     <Router>
@@ -41,6 +42,7 @@ function App() {
         <Route path="/guest-dashboard" element={<GuestDashboard />} />
         <Route path="/edit-hotel-images" element={<EditHotelImagesPage />} />
         <Route path="/reviews" element={<HotelReviewsPage />} />
+        <Route path="/rooms" element={<ManageRoomsPage />} />
 
 
 
