@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #fff;
+}
+
+.profile-page {
+  min-height: 100vh;
+  background:url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+}
+
+.profile-header {
+  background-color: #0284c7;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.profile-header .logo {
+  font-weight: bold;
+}
+
+.profile-header nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.profile-user {
+  display: flex;
+  align-items: center;
+  
+  color: black;
+  border-radius: 30px;
+  padding: 6px 15px;
+  font-weight: bold;
+}
+
+.user-icon {
+  
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  margin-left: 10px;
+}
+
+.profile-content {
+  text-align: center;
+  padding-top: 40px;
+}
+
+.profile-card {
+  background-color: white;
+  width: 500px;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #f0f8ff;
+}
+
+.profile-card h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.profile-field {
+  background-color: #e0e0e0;
+  color: #666;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 15px;
+  font-weight: 600;
+}
+
+.button-group {
+  margin-top: 20px;
+}
+
+.edit-btn {
+  background-color: black;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.access-btn {
+  background-color: #ff7a7a;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}

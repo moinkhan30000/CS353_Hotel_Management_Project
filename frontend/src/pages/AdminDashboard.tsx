@@ -20,7 +20,7 @@ const AdminDashboard = () => {
         <div className="welcome-section">
           <h1>Welcome Administrator</h1>
           <h3>Personal Details</h3>
-          <a href ="#">Manage Account</a>
+          <a href ="/admindashboard/profile">Manage Account</a>
           
         </div>
 
