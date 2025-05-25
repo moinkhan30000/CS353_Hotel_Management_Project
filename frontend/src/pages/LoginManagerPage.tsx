@@ -21,7 +21,7 @@ const LoginPage = () => {
 
     if (email === 'test@example.com' && password === 'password123') {
       setError('');
-      setTimeout(() => navigate('/managerdashboard'), 2000);
+      setTimeout(() => navigate('/managerhoteldashboard'), 2000);
     } else {
       setError('Invalid email or password.');
     }

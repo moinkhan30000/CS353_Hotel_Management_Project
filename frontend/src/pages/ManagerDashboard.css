@@ -1,50 +1,82 @@
-/* HotelDashboard.css */
-
+/* Base Container */
 .dashboard-container {
   min-height: 100vh;
   background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: rgb(0, 0, 0);
   font-family: sans-serif;
+  padding-top: 4.5rem; 
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1rem 2rem;
+  background-color: #0077b6; /* match homepage */
+  color: white;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Brand */
+.header-left {
+  flex: 1;
 }
 
 .brand {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
 }
 
-.nav-links a {
-  margin-right: 1rem;
-  text-decoration: none;
-  color: black;
-}
-
+/* User Info Dropdown */
 .user-info {
-  border: 2px solid black;
-  padding: 0.25rem 1rem;
-  border-radius: 9999px;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
 }
 
-.dashboard-main {
+.user-name {
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
   background-color: white;
   color: black;
-  padding: 2rem 6rem;
-
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
-  border-bottom-left-radius: 1.5rem;
-  margin: 4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  min-width: 120px;
 }
+
+.dropdown-content a {
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: 0.25rem 0;
+}
+
+.dropdown-content a:hover {
+  text-decoration: underline;
+}
+
+/* Welcome Section */
+.welcome-section {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 4.5rem 2rem 0 2rem; /* ✅ add top padding here */
+}
+
 
 .welcome-title {
   font-size: 1.875rem;
@@ -52,48 +84,29 @@
   margin-bottom: 2rem;
 }
 
+/* Main Dashboard Container */
+.dashboard-main {
+  background-color: white;
+  color: black;
+  padding: 2rem 6rem;
+  border-radius: 1.5rem;
+  margin: 4rem;
+}
+
+/* Grid Layout */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   padding: 1rem;
-  
 }
 
-.hotel-card {
-    background-color: #f3f4f6;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-.manage-account{
-  background-color: #f3f4f6;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.hotel-description{
-  background-color: #f3f4f6;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.status-box{
-  background-color: #f3f4f6;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.rooms-box{
-  background-color: #f3f4f6;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
+/* Card Boxes */
+.hotel-card,
+.manage-account,
+.hotel-description,
+.status-box,
+.rooms-box,
 .amenities-box {
   background-color: #f3f4f6;
   padding: 1.5rem;
@@ -101,6 +114,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Hotel Card Layout */
 .hotel-card-content {
   display: flex;
   justify-content: space-between;
@@ -145,6 +159,7 @@
   text-decoration: underline;
 }
 
+/* Section Titles */
 .manage-account h3,
 .hotel-description h3,
 .status-box h3,
@@ -154,6 +169,7 @@
   margin-bottom: 1rem;
 }
 
+/* Manage Account List */
 .manage-account ul {
   list-style: none;
   padding: 0;
@@ -168,9 +184,21 @@
   color: black;
 }
 
+/* Editable Description */
 .hotel-description p {
   font-size: 0.875rem;
   margin-bottom: 1rem;
+}
+
+.editable-textarea {
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  resize: vertical;
 }
 
 .hotel-description button,
@@ -183,25 +211,62 @@
   cursor: pointer;
 }
 
-.status-indicator {
+/* Rooms Section */
+.rooms-header {
   display: flex;
-  flex-direction: column; /* Stack options vertically */
-  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.status-option {
-  display: flex;
-  align-items: center; /* Keep dot and label aligned horizontally */
+/* Navigation Button for Rooms */
+.nav-button {
+  background-color: #0284c7;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #0369a1;
+}
+
+/* Amenities Grid */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+  font-size: 0.875rem;
 }
 
+.amenities-grid input[type='text'] {
+  grid-column: span 2;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
 
+.amenities-grid button {
+  grid-column: span 2;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
 
+.amenities-grid button:hover {
+  background-color: #333;
+}
 
-
-
-
-
+/* Switch for Status Toggle */
 .switch {
   position: relative;
   display: inline-block;
@@ -229,7 +294,7 @@
 }
 
 .slider::before {
-  content: "";
+  content: '';
   height: 20px;
   width: 20px;
   background-color: white;
@@ -246,36 +311,4 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(26px);
-}
-
-
-
-
-
-
-
-
-.active-dot {
-  width: 1rem;
-  height: 1rem;
-  background-color: black;
-  border-radius: 50%;
-}
-
-.rooms-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.amenities-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.welcome-section {
-  max-width: 1500px;
-  margin:  0 0 auto;
-  padding: 0 2rem; 
 }

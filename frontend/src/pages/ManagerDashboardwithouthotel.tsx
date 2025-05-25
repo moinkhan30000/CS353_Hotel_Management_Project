@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import './ManagerDashboardwithouthotel.css';
 import Footer from '../components/Footer/Footer'; 
 import { useNavigate } from 'react-router-dom';

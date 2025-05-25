@@ -1,88 +1,94 @@
-/* ManagerProfilePage.css */
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
 .container {
-  width: 100%;
-  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  min-height: 100vh;
+  font-family: sans-serif;
+  background: #f0f4f8;
 }
 
 .header {
-  background-color: #2563eb;
-  color: #fff;
-  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #0284c7;
+  color: white;
+  padding: 1rem 2rem;
 }
 
 .logo {
+  font-size: 1.75rem;
   font-weight: bold;
 }
 
 .managerprofilenav {
   display: flex;
-  gap: 20px;
   align-items: center;
+  gap: 1rem;
 }
 
-
-
 .managerprofile-button {
-  border: 2px solid #fff;
-  border-radius: 30px;
-  padding: 5px 15px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  background-color: black;
-  color: #fff;
+  gap: 0.5rem;
+  font-weight: 500;
 }
 
 .main {
-  padding: 40px;
-  text-align: center;
+  padding: 2rem;
 }
 
 .welcome {
-  font-size: 32px;
-  margin-bottom: 20px;
-  color: black;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
 }
 
 .profile-box {
-  margin: 0 auto;
-  padding: 30px;
-  max-width: 500px;
-  background-color: #f9f9f9;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: auto;
 }
 
 .profile-box h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .profile-field {
-  background-color: #e0e0e0;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 20px;
-  color: #555;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.field-label {
   font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #374151;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.input-field {
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
 }
 
 .edit-button {
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-  margin-top: 20px;
+  margin-top: 1rem;
+  background-color: #0284c7;
+  color: white;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 10px;
-  font-weight: bold;
+  border-radius: 0.5rem;
+  font-weight: 600;
   cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0369a1;
 }
