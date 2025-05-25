@@ -14,6 +14,7 @@ const LoginchoicePage = () => {
         <div className="choice-buttons">
           <button onClick={() => navigate('/login/guest')}>Login as Guest</button>
           <button onClick={() => navigate('/login/manager')}>Login as Manager</button>
+          <button onClick={() => navigate('/login/admin')}>Login as Admin</button>
         </div>
       </div>
       <Footer />

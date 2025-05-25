@@ -19,7 +19,9 @@ import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
-import ManageRoomsPage from './pages/ManageRoomsPAge';
+import ManageRoomsPage from './pages/ManageRoomsPage';
+import LoginAdmin from './pages/LoginAdmin';
+import AdminDashboard from './pages/AdminDashboard';
 function App() {
   return (
     <Router>
@@ -43,8 +45,8 @@ function App() {
         <Route path="/edit-hotel-images" element={<EditHotelImagesPage />} />
         <Route path="/reviews" element={<HotelReviewsPage />} />
         <Route path="/rooms" element={<ManageRoomsPage />} />
-
-
+        <Route path="/login/admin" element={<LoginAdmin />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
 
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
