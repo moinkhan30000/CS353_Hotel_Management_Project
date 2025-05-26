@@ -22,6 +22,7 @@ import HotelReviewsPage from './pages/HotelReviewPage';
 import ManageRoomsPage from './pages/ManageRoomsPAge';
 import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminProfile from './pages/AdminProfile';
 function App() {
   return (
     <Router>
@@ -47,7 +48,7 @@ function App() {
         <Route path="/rooms" element={<ManageRoomsPage />} />
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
-
+        <Route path="/admindashboard/profile" element={<AdminProfile />} />
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>
