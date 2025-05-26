@@ -1,172 +1,129 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header/Header';
-import PrivateHeader from '../components/PrivateHeader/PrivateHeader';
 import Footer from '../components/Footer/Footer';
 import './PropertyDetailsPage.css';
 
-interface RoomFeature {
-  id: number;
-  label: string;
-}
-
-interface RoomType {
-  id: number;
-  name: string;
-  bedsDescription: string;
-  guests: number;
-  price: number;
-  highlights: string[];
-  features: RoomFeature[];
-}
-
-const sampleFeatures: RoomFeature[] = [
-  { id: 1, label: 'Wifi' },
-  { id: 2, label: 'Mini Bar' },
-  { id: 3, label: 'Extra Toiletries' },
-  { id: 4, label: 'Coffee/Tea Maker' },
-  { id: 5, label: 'Streaming Services' },
-];
-
-const sampleRoomTypes: RoomType[] = [
-  {
-    id: 1,
-    name: 'Twin Room',
-    bedsDescription: '2 Twin beds',
+const sampleRoom = {
+  name: 'The Oasis',
+  location: 'Rio de Janeiro, Brazil',
+  rating: 9.0,
+  description: `Atlantica Golden Beach Hotel - Adults Only has a restaurant, bar, a shared lounge and garden in Paphos City. With free WiFi, this 4-star hotel offers a private beach area and a concierge service. The hotel features an outdoor swimming pool, fitness center, evening entertainment and a 24-hour front desk...`,
+  features: [
+    '2 swimming pools',
+    'Free parking',
+    'Free Wifi',
+    'Non-smoking rooms',
+    'Spa',
+    'Fitness center',
+    'Tea/Coffee Maker in All Rooms',
+    'Bar',
+    'Private beach area',
+    'Very Good Breakfast',
+  ],
+  highlights: {
+    breakfast: 'Very good Breakfast',
+    swimmingPool: 'Private, Shallow end, Indoor swimming pool, Outdoor swimming pool',
+    parking: 'Free parking, On-site parking, Accessible',
+  },
+  room: {
+    type: 'Twin Room',
+    beds: '2 Twin beds',
     guests: 2,
     price: 10000,
     highlights: [
       'Very good breakfast included',
       'Flexible to reschedule if plans change',
       'Non-refundable',
-      'Pay online',
+      'Pay online'
     ],
-    features: sampleFeatures,
-  },
-];
+    features: ['Wifi', 'Mini Bar', 'Extra Toiletries', 'Coffee/Tea Maker', 'Streaming Services']
+  }
+};
 
-const PropertyDetailPage = () => {
-  const [isLoggedIn] = useState(true);
-  const [selectedFeatures, setSelectedFeatures] = useState<number[]>([]);
-  const [selectedRoomCount, setSelectedRoomCount] = useState(1);
-
-  const toggleFeature = (featureId: number) => {
-    setSelectedFeatures(prev =>
-      prev.includes(featureId) ? prev.filter(id => id !== featureId) : [...prev, featureId]
-    );
-  };
-
-  const incrementRoomCount = () => setSelectedRoomCount(prev => prev + 1);
-  const decrementRoomCount = () => setSelectedRoomCount(prev => (prev > 1 ? prev - 1 : 1));
+const PropertyDetailsPage = () => {
+  const [roomCount, setRoomCount] = useState(1);
+  const navigate = useNavigate(); // ✅ Moved here inside the component
 
   return (
-    <>
-      {isLoggedIn ? <PrivateHeader username="Moin Khan" onLogout={() => {}} /> : <Header />}
-
-      <main className="property-detail-wrapper">
-        <div className="property-banner">
-          <h1>The Oasis</h1>
-          <p>Rio de Janeiro, Brazil</p>
-          <p className="rating">Wonderful 9.0</p>
-          <button className="btn view-reviews">View Reviews</button>
+    <div className="property-details">
+      <Header />
+      <div className="hero-section">
+        <div className="title-area">
+          <div>
+            <h2>{sampleRoom.name}</h2>
+            <span>{sampleRoom.location}</span>
+          </div>
+          <div className="rating-review">
+            <div className="rating-badge styled-rating">{sampleRoom.rating}/10</div>
+            <button className="review-btn" onClick={() => navigate('/reviews_view')}>View Reviews</button>
+          </div>
         </div>
-
         <div className="gallery">
-          <img src="/assets/oasis.jpg" alt="Main View" className="main-img" />
-          <div className="thumbs">
-            {Array(6)
-              .fill(null)
-              .map((_, i) => (
-                <img key={i} src="/assets/oasis.jpg" alt={`Thumb ${i + 1}`} />
+          <img src="https://source.unsplash.com/600x400/?hotel,resort" alt="Main view" className="main-img" />
+          <div className="thumbnail-row">
+            {[...Array(6)].map((_, i) => (
+              <img key={i} src={`https://source.unsplash.com/100x100/?room,view&sig=${i}`} alt={`thumb-${i}`} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="content">
+        <div className="left-column">
+          <p className="description">{sampleRoom.description}</p>
+          <ul className="features-list">
+            {sampleRoom.features.map((feature, i) => (
+              <li key={i}>{feature}</li>
+            ))}
+          </ul>
+
+          <div className="room-box">
+            <h3>{sampleRoom.room.type}</h3>
+            <p>{sampleRoom.room.beds}</p>
+            <p>Guests: {sampleRoom.room.guests}</p>
+            <p className="price">${sampleRoom.room.price.toLocaleString()}</p>
+            <ul className="room-highlights">
+              {sampleRoom.room.highlights.map((h, i) => (
+                <li key={i}>{h}</li>
               ))}
+            </ul>
+            <div className="checkbox-features">
+              {sampleRoom.room.features.map((feature, i) => (
+                <label key={i}>
+                  <input type="checkbox" /> {feature}
+                </label>
+              ))}
+            </div>
+            <div className="room-select">
+              <label>Select Rooms: </label>
+              <select value={roomCount} onChange={(e) => setRoomCount(+e.target.value)}>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            </div>
+<button
+  className="reserve-btn"
+  onClick={() => navigate('/booking')}
+>
+  Reserve
+</button>
           </div>
         </div>
 
-        <section className="info-description">
-          <div className="description">
-            <p>
-              Atlantica Golden Beach Hotel offers luxurious accommodations with a private beach,
-              modern amenities, and scenic views. Guests can enjoy outdoor pools, fitness centers,
-              and exquisite dining experiences.
-            </p>
-            <ul>
-              <li>2 swimming pools</li>
-              <li>Free parking</li>
-              <li>Free Wifi</li>
-              <li>Non-smoking rooms</li>
-              <li>Spa</li>
-              <li>Fitness center</li>
-              <li>Tea/Coffee Maker in All Rooms</li>
-              <li>Private beach area</li>
-              <li>Very Good Breakfast</li>
-            </ul>
+        <div className="right-column">
+          <div className="highlight-box">
+            <h4>Property Highlights</h4>
+            <p><strong>Breakfast Available:</strong> {sampleRoom.highlights.breakfast}</p>
+            <p><strong>Swimming Pool:</strong> {sampleRoom.highlights.swimmingPool}</p>
+            <p><strong>Parking:</strong> {sampleRoom.highlights.parking}</p>
           </div>
-
-          <aside className="highlights">
-            <h3>Property Highlights</h3>
-            <ul>
-              <li><strong>Breakfast:</strong> Very good Breakfast</li>
-              <li><strong>Swimming Pool:</strong> Private, Indoor & Outdoor</li>
-              <li><strong>Parking:</strong> Free & Accessible</li>
-            </ul>
-            <button className="btn reserve">Reserve</button>
-          </aside>
-        </section>
-
-        <section className="room-section">
-          <table>
-            <thead>
-              <tr>
-                <th>Room Type</th>
-                <th>Guests</th>
-                <th>Price</th>
-                <th>Highlights</th>
-                <th>Rooms</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sampleRoomTypes.map(room => (
-                <tr key={room.id}>
-                  <td>
-                    <strong>{room.name}</strong>
-                    <br />
-                    <span>{room.bedsDescription}</span>
-                    <div className="features">
-                      {room.features.map(f => (
-                        <label key={f.id}>
-                          <input
-                            type="checkbox"
-                            checked={selectedFeatures.includes(f.id)}
-                            onChange={() => toggleFeature(f.id)}
-                          />
-                          {f.label}
-                        </label>
-                      ))}
-                    </div>
-                  </td>
-                  <td>👤 x{room.guests}</td>
-                  <td>${room.price.toLocaleString()}</td>
-                  <td>
-                    <ul>
-                      {room.highlights.map((hl, i) => (
-                        <li key={i}>{hl}</li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td className="room-count">
-                    <button onClick={decrementRoomCount}>-</button>
-                    <span>{selectedRoomCount}</span>
-                    <button onClick={incrementRoomCount}>+</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </main>
-
+        </div>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
-export default PropertyDetailPage;
+export default PropertyDetailsPage;

@@ -32,6 +32,8 @@ import GuestReviewPage from './pages/GuestReviewPage';
 import GuestTopUpPage from './pages/GuestTopUpPage';
 import PropertyListingPage from './pages/PropertyListingPage';
 import PropertyDetailPage from './pages/PropertyDetailsPage';
+import HotelReviewPageView from './pages/HotelReviewPageView';
+import BookingGuestDetailsPage from './pages/BookingGuestDetailsPage';
 
 
 function App() {
@@ -69,7 +71,8 @@ function App() {
         <Route path="/guest-topup" element={<GuestTopUpPage />} />
         <Route path="/properties" element={<PropertyListingPage />} />
         <Route path="/properties/:propertyId" element={<PropertyDetailPage />} />
-
+        <Route path="/reviews_view" element={<HotelReviewPageView />} />
+        <Route path="/booking" element={<BookingGuestDetailsPage />} />
 
 
       </Routes>
