@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #0284c7;
+  color: #ffffff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.profile-button {
+  
+  color: black;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main {
+  padding: 40px;
+  background:url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  min-height: 100vh;
+}
+
+.welcome-text {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.reports-box {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  margin: auto;
+}
+
+.reports-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.report-header {
+  background: black;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.report-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.report-details {
+  background: #e0e0e0;
+  padding: 10px;
+  border-radius: 15px;
+  flex: 1;
+  text-align: center;
+  margin-right: 10px;
+  color: gray;
+}
+
+.report-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button,
+.download-button,
+.back-button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.back-button {
+  margin-top: 20px;
+  display: block;
+  width: 100px;
+}

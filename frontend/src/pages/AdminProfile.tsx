@@ -7,7 +7,7 @@ const AdminProfile = () => {
       <header className="profile-header">
         <div className="logo">HORIZONSTAY</div>
         <nav>
-          <a href="/">Home</a>
+          <a href="/">Logout</a>
           <a href="/admindashboard">Dashboard</a>
           <a href="/contact">Contact</a>
         </nav>
