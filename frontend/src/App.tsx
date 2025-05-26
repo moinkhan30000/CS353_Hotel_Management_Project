@@ -19,13 +19,15 @@ import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
-import ManageRoomsPage from './pages/ManageRoomsPage';
+import ManageRoomsPage from './pages/ManageRoomsPAge';
 import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProfile from './pages/AdminProfile';
 import ReportsPage from './pages/Reportlist';
 import ReportDetailsPage from './pages/Reportview';
 import GuestPaymentHistory from './pages/GuestPaymentHistory';
+import GuestProfile from './pages/GuestProfile';
+
 function App() {
   return (
     <Router>
@@ -55,6 +57,8 @@ function App() {
         <Route path="/admindashboard/reports" element={<ReportsPage />} />
         <Route path="/admindashboard/reports/view" element={<ReportDetailsPage />} />
         <Route path="/payment-history" element={<GuestPaymentHistory />} />
+        <Route path="/guest-profile" element={<GuestProfile />} />
+
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>

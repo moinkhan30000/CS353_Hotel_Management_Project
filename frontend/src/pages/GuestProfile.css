@@ -1,0 +1,92 @@
+/* === Profile Container === */
+.payment-history-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* === Profile Fields === */
+.transaction-row {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.transaction-row label {
+  font-weight: bold;
+  margin-right: 1rem;
+  flex: 1;
+  min-width: 150px;
+}
+
+.transaction-row input,
+.transaction-row select {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  width: 60%;
+  max-width: 300px;
+}
+
+/* === Password Error Message === */
+.payment-history-container p {
+  margin-left: 1rem;
+  font-size: 0.875rem;
+}
+
+/* === Action Buttons === */
+.payment-history-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.payment-history-actions .pay-button,
+.payment-history-container .pay-button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.payment-history-actions .close-button,
+.payment-history-container .close-button {
+  background-color: #ddd;
+  color: black;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.payment-history-actions .pay-button:hover,
+.payment-history-container .pay-button:hover {
+  background-color: #333;
+}
+
+.payment-history-actions .close-button:hover,
+.payment-history-container .close-button:hover {
+  background-color: #bbb;
+}
+.profile-input {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  width: 60%;
+  max-width: 300px;
+}
