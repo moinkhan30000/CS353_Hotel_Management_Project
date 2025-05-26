@@ -1,23 +1,98 @@
 import { useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
-import './GuestDashboard.css'; // You can create this for any custom styling
+import './GuestDashboard.css';
+
+interface Guest {
+  username: string;
+  email: string;
+  phone: string;
+  identity: string;
+  gender: string;
+}
 
 interface Reservation {
   hotelName: string;
   location: string;
   bookingId: string;
+  amountPaid: number;
+  amountDue: number;
+  checkIn: string;
+  checkOut: string;
+  guests: Guest[];
 }
 
 const GuestDashboard = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  const [enrolled, setEnrolled] = useState(false);
+  const [canceled, setCanceled] = useState<string | null>(null);
+  const [activeReservations, setActiveReservations] = useState<Reservation[]>([{
+    hotelName: 'Oasis Hotel',
+    location: 'Rio de Janeiro',
+    bookingId: '32424',
+    amountPaid: 150,
+    amountDue: 50,
+    checkIn: '2025-06-20',
+    checkOut: '2025-06-25',
+    guests: [
+      {
+        username: 'john_doe',
+        email: 'john@example.com',
+        phone: '+5521999999999',
+        identity: 'ID20234234',
+        gender: 'Male',
+      },
+      {
+        username: 'jane_doe',
+        email: 'jane@example.com',
+        phone: '+5521988888888',
+        identity: 'ID20235555',
+        gender: 'Female',
+      },
+    ],
+  }, {
+    hotelName: 'Istanbul Hotel',
+    location: 'Istanbul',
+    bookingId: '58309',
+    amountPaid: 300,
+    amountDue: 0,
+    checkIn: '2025-06-15',
+    checkOut: '2025-06-18',
+    guests: [],
+  }, {
+    hotelName: 'Ankara Hotel',
+    location: 'Ankara',
+    bookingId: '23939',
+    amountPaid: 200,
+    amountDue: 100,
+    checkIn: '2025-06-10',
+    checkOut: '2025-06-12',
+    guests: [],
+  }]);
 
-  const reservations: Reservation[] = [
-    { hotelName: 'Oasis Hotel', location: 'Rio de Janeiro', bookingId: '32424' },
-    { hotelName: 'Istanbul Hotel', location: 'Istanbul', bookingId: '58309' },
-    { hotelName: 'Ankara Hotel', location: 'Ankara', bookingId: '23939' },
-  ];
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [reservationHistory, setReservationHistory] = useState<Reservation[]>([]);
+
+  const isCancellable = (checkIn: string) => {
+    const today = new Date();
+    const checkInDate = new Date(checkIn);
+    const diffInTime = checkInDate.getTime() - today.getTime();
+    const diffInDays = diffInTime / (1000 * 3600 * 24);
+    return diffInDays >= 7;
+  };
+
+  const confirmCancel = () => {
+    if (selectedReservation) {
+      const penalty = (selectedReservation.amountPaid * 0.1).toFixed(2);
+      const updated = activeReservations.filter(r => r.bookingId !== selectedReservation.bookingId);
+      setActiveReservations(updated);
+      setReservationHistory([...reservationHistory, selectedReservation]);
+      setCanceled(`Canceled. 10% penalty applied: ${penalty} TL`);
+      setSelectedReservation(null);
+      setShowConfirm(false);
+    }
+  };
 
   return (
     <div className="page-wrapper">
@@ -39,64 +114,108 @@ const GuestDashboard = () => {
           </nav>
         </header>
 
-        <main className="dashboard-main">
-          <h2 className="welcome-title">Welcome</h2>
+        <main className="dashboard-main styled-background">
+          <h2 className="dashboard-title">Welcome</h2>
 
-          <section className="reservation-section">
+          <section className="reservations-section">
             <div className="section-header">
               <h3>Reservation Cards</h3>
-              <a href="#">See more &rsaquo;</a>
+              <a href="#">See more ›</a>
             </div>
-
             <div className="reservation-grid">
-              {reservations.map((res, index) => (
-                <div key={index} className="reservation-card" onClick={() => setSelectedReservation(res)}>
-                  <div className="reservation-hotel">{res.hotelName}</div>
-                  <div className="reservation-id">Booking ID: {res.bookingId}</div>
+              {activeReservations.map((reservation, idx) => (
+                <div
+                  key={idx}
+                  className="reservation-card"
+                  onClick={() => {
+                    setSelectedReservation(reservation);
+                    setCanceled(null);
+                    setShowConfirm(false);
+                  }}
+                >
+                  <p className="reservation-hotel">{reservation.hotelName}</p>
+                  <p className="reservation-id">Booking ID: {reservation.bookingId}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="guest-links">
-            <div className="link-card"><h4>Payment Info</h4><p>Transaction History</p></div>
-            <div className="link-card"><h4>Manage Account</h4><p>Personal Details</p></div>
-            <div className="link-card"><h4>Travel Activity</h4><p>Reservation History</p></div>
-            <div className="link-card"><h4>Review Hotels</h4><p>Review Visited Hotels</p></div>
-          </section>
-        </main>
-
-        {selectedReservation && (
-          <div className="modal-overlay" onClick={() => setSelectedReservation(null)}>
-            <div className="reservation-modal" onClick={(e) => e.stopPropagation()}>
+          {selectedReservation && !showConfirm && (
+            <div className="popup">
               <h3>{selectedReservation.hotelName}</h3>
               <p>{selectedReservation.location}</p>
               <p>Booking ID: {selectedReservation.bookingId}</p>
-
-              <h4>Guests</h4>
-              <div className="guest-info-grid">
-                <div className="guest-column">
-                  <input placeholder="Username" />
-                  <input placeholder="Email" />
-                  <input placeholder="Phone Number" />
-                  <input placeholder="Identity Number" />
-                  <input placeholder="Gender" />
+              <p>Check-in: {selectedReservation.checkIn}</p>
+              <p>Check-out: {selectedReservation.checkOut}</p>
+              <p>Amount Paid: {selectedReservation.amountPaid} TL</p>
+              <p>Amount Due: {selectedReservation.amountDue} TL</p>
+              {selectedReservation.guests.length > 0 && (
+                <div className="guest-info-grid">
+                  {selectedReservation.guests.map((guest, i) => (
+                    <div className="guest-column" key={i}>
+                      <h4>Guest No.{i + 1}</h4>
+                      <p><strong>Username:</strong> {guest.username}</p>
+                      <p><strong>Email:</strong> {guest.email}</p>
+                      <p><strong>Phone Number:</strong> {guest.phone}</p>
+                      <p><strong>Identity Number:</strong> {guest.identity}</p>
+                      <p><strong>Gender:</strong> {guest.gender}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="guest-column">
-                  <input placeholder="Username" />
-                  <input placeholder="Email" />
-                  <input placeholder="Phone Number" />
-                  <input placeholder="Identity Number" />
-                  <input placeholder="Gender" />
-                </div>
-              </div>
-
-              <button className="upload-button" onClick={() => setSelectedReservation(null)}>Close</button>
+              )}
+              {selectedReservation.amountDue > 0 && (
+                <button className="pay-button" onClick={() => window.location.href='/payment'}>
+                  Pay Now
+                </button>
+              )}
+              {isCancellable(selectedReservation.checkIn) && (
+                <button className="cancel-button" onClick={() => setShowConfirm(true)}>Cancel Booking</button>
+              )}
+              <button className="close-button" onClick={() => setSelectedReservation(null)}>Close</button>
             </div>
-          </div>
-        )}
+          )}
 
-        <Footer />
+          {showConfirm && selectedReservation && (
+            <div className="popup">
+              <h3>Confirm Cancellation</h3>
+              <p>You will be charged a 10% penalty of {selectedReservation.amountPaid} TL</p>
+              <p>Penalty: {(selectedReservation.amountPaid * 0.1).toFixed(2)} TL</p>
+              <button className="cancel-button" onClick={confirmCancel}>Yes, Cancel Booking</button>
+              <button className="close-button" onClick={() => setShowConfirm(false)}>Go Back</button>
+            </div>
+          )}
+
+          {canceled && (
+            <div className="popup">
+              <p>{canceled}</p>
+              <button className="close-button" onClick={() => setCanceled(null)}>Close</button>
+            </div>
+          )}
+
+          <section className="guest-links">
+            <div className="link-card"> <h4>Payment Info</h4> <p>Transaction History</p> </div>
+            <div className="link-card"> <h4>Manage Account</h4> <p>Personal Details</p> </div>
+            <div className="link-card"> <h4>Travel Activity</h4> <p>Reservation History</p> </div>
+            <div className="link-card"> <h4>Review Hotels</h4> <p>Review Visited Hotels</p> </div>
+          </section>
+
+          <section className="wallet-section">
+            <h3>Wallet</h3>
+            <p>Wallet ID: 39495347</p>
+            <p>Balance: 2763.25 TL <button className="topup-button">TOP-UP</button></p>
+          </section>
+
+          <section className="loyalty-section">
+            <h3>Loyalty Program</h3>
+            {enrolled ? (
+              <p>Loyalty Points: 0</p>
+            ) : (
+              <button className="loyalty-button" onClick={() => setEnrolled(true)}>Enroll in Loyalty Program</button>
+            )}
+          </section>
+
+          <Footer />
+        </main>
       </div>
     </div>
   );
