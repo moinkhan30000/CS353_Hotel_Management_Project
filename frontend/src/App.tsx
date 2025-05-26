@@ -23,6 +23,8 @@ import ManageRoomsPage from './pages/ManageRoomsPAge';
 import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProfile from './pages/AdminProfile';
+import GuestPaymentHistory from './pages/GuestPaymentHistory';
+
 function App() {
   return (
     <Router>
@@ -49,6 +51,8 @@ function App() {
         <Route path="/login/admin" element={<LoginAdmin />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/admindashboard/profile" element={<AdminProfile />} />
+        <Route path="/payment-history" element={<GuestPaymentHistory />} />
+
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
     </Router>

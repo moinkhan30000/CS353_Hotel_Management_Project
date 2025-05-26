@@ -193,7 +193,10 @@ const GuestDashboard = () => {
           )}
 
           <section className="guest-links">
-            <div className="link-card"> <h4>Payment Info</h4> <p>Transaction History</p> </div>
+<div className="link-card">
+  <h4><a href="/payment-history">Payment History</a></h4>
+  <p>View your past transactions</p>
+</div>
             <div className="link-card"> <h4>Manage Account</h4> <p>Personal Details</p> </div>
             <div className="link-card"> <h4>Travel Activity</h4> <p>Reservation History</p> </div>
             <div className="link-card"> <h4>Review Hotels</h4> <p>Review Visited Hotels</p> </div>

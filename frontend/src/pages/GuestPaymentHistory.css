@@ -1,0 +1,58 @@
+.payment-history-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.payment-history-header {
+  font-weight: bold;
+  text-align: center;
+  background-color: black;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+}
+
+.transaction-row {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.payment-history-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.payment-history-actions button {
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.payment-history-actions .cancel-button {
+  background-color: #e53935;
+  color: white;
+}
+
+.payment-history-actions .cancel-button:hover {
+  background-color: #c62828;
+}
+
+.payment-history-actions .close-button {
+  background-color: #ddd;
+  color: black;
+}
+
+.payment-history-actions .close-button:hover {
+  background-color: #bbb;
+}
