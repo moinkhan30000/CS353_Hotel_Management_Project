@@ -1,0 +1,145 @@
+.property-page-wrapper {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto 4rem auto;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.1);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Filters Sidebar */
+.filters {
+  flex: 0 0 250px;
+  background: #f9f9f9;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.06);
+  height: fit-content;
+}
+
+.filter-section h3 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.filter-group {
+  margin-bottom: 1.25rem;
+}
+
+.filter-group strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.filter-group input[type='radio'] {
+  margin-right: 0.5rem;
+  accent-color: #000; /* Black check mark */
+}
+
+/* Property Listing Section */
+.property-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 300px;
+}
+
+/* Individual Property Card */
+.property-card {
+  display: flex;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgb(0 0 0 / 0.05);
+  overflow: hidden;
+  padding: 1rem;
+  align-items: center;
+  gap: 1rem;
+}
+
+.property-image {
+  width: 160px;
+  height: 140px;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.property-info {
+  flex: 1;
+}
+
+.property-info h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem 0;
+}
+
+.location {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.property-rating-price {
+  text-align: right;
+  min-width: 110px;
+  font-weight: 600;
+}
+
+.rating {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Footer tweaks for spacing */
+footer.footer {
+  margin-top: 3rem;
+}
+/* Search Bar Container on top */
+.search-bar-container {
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  outline-offset: 2px;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 5px rgba(0, 119, 204, 0.5);
+}

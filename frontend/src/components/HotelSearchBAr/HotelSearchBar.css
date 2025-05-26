@@ -1,0 +1,44 @@
+.hotel-search-bar {
+  display: flex;
+  gap: 1rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hotel-search-bar .field {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 150px;
+}
+
+.hotel-search-bar label {
+  font-size: 0.75rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.hotel-search-bar input {
+  padding: 0.4rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.hotel-search-bar .search-btn {
+  background-color: black;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.hotel-search-bar .search-btn:hover {
+  background-color: #222;
+}

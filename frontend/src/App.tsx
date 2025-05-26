@@ -19,7 +19,7 @@ import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
-import ManageRoomsPage from './pages/ManageRoomsPAge';
+import ManageRoomsPage from './pages/ManageRoomsPage';
 import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProfile from './pages/AdminProfile';
@@ -30,6 +30,7 @@ import GuestProfile from './pages/GuestProfile';
 import GuestReservationHistory from './pages/GuestReservationHistory';
 import GuestReviewPage from './pages/GuestReviewPage';
 import GuestTopUpPage from './pages/GuestTopUpPage';
+import PropertyListingPage from './pages/PropertyListingPage';
 
 
 function App() {
@@ -65,6 +66,8 @@ function App() {
         <Route path="/reservation-history" element={<GuestReservationHistory />} />
         <Route path="/guest-reviews" element={<GuestReviewPage />} />
         <Route path="/guest-topup" element={<GuestTopUpPage />} />
+        <Route path="/properties" element={<PropertyListingPage />} />
+
 
 
       </Routes>
