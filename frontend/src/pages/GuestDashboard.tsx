@@ -1,96 +1,105 @@
-import React, { useState } from 'react';
-import './GuestDashboard.css'; // Assuming you have a separate CSS file for styling
-import Header from '../components/Header/Header';
+import { useState } from 'react';
 import Footer from '../components/Footer/Footer';
+import './ManagerDashboard.css';
+import './GuestDashboard.css'; // You can create this for any custom styling
 
-const UserDashboard = () => {
-  const [userName] = useState('Moin Khan'); // Example username, replace with actual user data.
+interface Reservation {
+  hotelName: string;
+  location: string;
+  bookingId: string;
+}
 
-  // Example data
-  const bookings = [
-    { id: 1, hotelName: 'Oasis Hotel', bookingDate: new Date(2025, 4, 10), status: 'upcoming' },
-    { id: 2, hotelName: 'Sunset Resort', bookingDate: new Date(2025, 3, 15), status: 'past' },
-    { id: 3, hotelName: 'Mountain Retreat', bookingDate: new Date(2025, 5, 5), status: 'upcoming' },
-  ];
+const GuestDashboard = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
-  const payments = [
-    { id: 1, hotelName: 'Oasis Hotel', amount: '$200', dueDate: new Date(2025, 4, 10), status: 'upcoming' },
-    { id: 2, hotelName: 'Sunset Resort', amount: '$150', dueDate: new Date(2025, 3, 15), status: 'paid' },
-  ];
-
-  const reviews = [
-    { id: 1, hotelName: 'Oasis Hotel', review: 'Great experience, highly recommend!' },
-    { id: 2, hotelName: 'Mountain Retreat', review: 'Very peaceful, perfect for a getaway.' },
+  const reservations: Reservation[] = [
+    { hotelName: 'Oasis Hotel', location: 'Rio de Janeiro', bookingId: '32424' },
+    { hotelName: 'Istanbul Hotel', location: 'Istanbul', bookingId: '58309' },
+    { hotelName: 'Ankara Hotel', location: 'Ankara', bookingId: '23939' },
   ];
 
   return (
-    <div className="dashboard-container">
-     
-
-      <main className="dashboard-main">
-        <h2 className="welcome-title">Welcome {userName}!</h2>
-        <div className="dashboard-box-container">
-          {/* Bookings Section */}
-          <div className="dashboard-box bookings">
-            <h3>Your Bookings</h3>
-            <div className="booking-grid">
-              {bookings.map((booking) => {
-                const bookingDate = booking.bookingDate.toLocaleDateString();
-                const isUpcoming = booking.status === 'upcoming';
-                return (
-                  <div
-                    key={booking.id}
-                    className={`booking-box ${isUpcoming ? 'upcoming' : 'past'}`}
-                  >
-                    <h4>{booking.hotelName}</h4>
-                    <p>Booking Date: {bookingDate}</p>
-                    <p>Status: {isUpcoming ? 'Upcoming' : 'Past'}</p>
-                    <button>{isUpcoming ? 'View Details' : 'Rebook'}</button>
-                  </div>
-                );
-              })}
-            </div>
+    <div className="page-wrapper">
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <div className="header-left">
+            <h1 className="brand">HORIZONSTAY</h1>
           </div>
-
-          {/* Payments Section */}
-          <div className="dashboard-box payments">
-            <h3>Your Payments</h3>
-            <div className="payment-grid">
-              {payments.map((payment) => {
-                const dueDate = payment.dueDate.toLocaleDateString();
-                return (
-                  <div key={payment.id} className={`payment-box ${payment.status === 'paid' ? 'paid' : 'upcoming'}`}>
-                    <h4>{payment.hotelName}</h4>
-                    <p>Amount: {payment.amount}</p>
-                    <p>Due Date: {dueDate}</p>
-                    <p>Status: {payment.status === 'paid' ? 'Paid' : 'Upcoming'}</p>
-                    <button>{payment.status === 'paid' ? 'View Receipt' : 'Pay Now'}</button>
-                  </div>
-                );
-              })}
+          <nav className="dashboard-nav">
+            <a href="/" className="nav-link">Home</a>
+            <div className="user-info" onClick={() => setDropdownOpen(!dropdownOpen)}>
+              <span className="user-name">Moin Khan ▼</span>
+              {dropdownOpen && (
+                <div className="dropdown-content">
+                  <a href="/">Logout</a>
+                </div>
+              )}
             </div>
-          </div>
+          </nav>
+        </header>
 
-          {/* Reviews Section */}
-          <div className="dashboard-box reviews">
-            <h3>Your Reviews</h3>
-            <div className="reviews-list">
-              {reviews.map((review) => (
-                <div key={review.id} className="review-box">
-                  <h4>{review.hotelName}</h4>
-                  <p>{review.review}</p>
+        <main className="dashboard-main">
+          <h2 className="welcome-title">Welcome</h2>
+
+          <section className="reservation-section">
+            <div className="section-header">
+              <h3>Reservation Cards</h3>
+              <a href="#">See more &rsaquo;</a>
+            </div>
+
+            <div className="reservation-grid">
+              {reservations.map((res, index) => (
+                <div key={index} className="reservation-card" onClick={() => setSelectedReservation(res)}>
+                  <div className="reservation-hotel">{res.hotelName}</div>
+                  <div className="reservation-id">Booking ID: {res.bookingId}</div>
                 </div>
               ))}
             </div>
+          </section>
 
-          
+          <section className="guest-links">
+            <div className="link-card"><h4>Payment Info</h4><p>Transaction History</p></div>
+            <div className="link-card"><h4>Manage Account</h4><p>Personal Details</p></div>
+            <div className="link-card"><h4>Travel Activity</h4><p>Reservation History</p></div>
+            <div className="link-card"><h4>Review Hotels</h4><p>Review Visited Hotels</p></div>
+          </section>
+        </main>
+
+        {selectedReservation && (
+          <div className="modal-overlay" onClick={() => setSelectedReservation(null)}>
+            <div className="reservation-modal" onClick={(e) => e.stopPropagation()}>
+              <h3>{selectedReservation.hotelName}</h3>
+              <p>{selectedReservation.location}</p>
+              <p>Booking ID: {selectedReservation.bookingId}</p>
+
+              <h4>Guests</h4>
+              <div className="guest-info-grid">
+                <div className="guest-column">
+                  <input placeholder="Username" />
+                  <input placeholder="Email" />
+                  <input placeholder="Phone Number" />
+                  <input placeholder="Identity Number" />
+                  <input placeholder="Gender" />
+                </div>
+                <div className="guest-column">
+                  <input placeholder="Username" />
+                  <input placeholder="Email" />
+                  <input placeholder="Phone Number" />
+                  <input placeholder="Identity Number" />
+                  <input placeholder="Gender" />
+                </div>
+              </div>
+
+              <button className="upload-button" onClick={() => setSelectedReservation(null)}>Close</button>
+            </div>
           </div>
-        </div>
-      </main>
+        )}
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 };
 
-export default UserDashboard;
+export default GuestDashboard;

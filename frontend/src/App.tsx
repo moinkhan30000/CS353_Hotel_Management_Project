@@ -19,7 +19,7 @@ import LoginchoicePage from './pages/Loginchoice';
 import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
-import ManageRoomsPage from './pages/ManageRoomsPage';
+import ManageRoomsPage from './pages/ManageRoomsPAge';
 import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
 function App() {
