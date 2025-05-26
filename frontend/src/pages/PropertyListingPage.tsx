@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import PrivateHeader from '../components/PrivateHeader/PrivateHeader';
 import Footer from '../components/Footer/Footer';
@@ -19,17 +20,14 @@ const propertiesData = [
 const PropertyListingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Search inputs state
   const [location, setLocation] = useState('Rio de Janeiro');
   const [checkIn, setCheckIn] = useState('2025-06-20');
   const [checkOut, setCheckOut] = useState('2025-06-25');
   const [guests, setGuests] = useState('2');
 
-  // Your existing filters
   const [budgetFilter, setBudgetFilter] = useState<number | null>(2000);
   const [ratingFilter, setRatingFilter] = useState<number | null>(9);
 
-  // Filtered properties based on budget and rating
   const filteredProperties = propertiesData.filter(property => {
     let budgetMatch = true;
     if (budgetFilter === 2000) {
@@ -49,7 +47,6 @@ const PropertyListingPage = () => {
       ratingMatch = property.rating < 4;
     }
 
-    // Also filter by location search text if you want
     const locationMatch = location
       ? property.location.toLowerCase().includes(location.toLowerCase())
       : true;
@@ -58,8 +55,6 @@ const PropertyListingPage = () => {
   });
 
   const handleSearch = () => {
-    // For now, this just logs values.
-    // You can implement filter update or navigation here
     console.log({ location, checkIn, checkOut, guests });
   };
 
@@ -77,7 +72,6 @@ const PropertyListingPage = () => {
       <main className="property-page-wrapper">
         <h1 className="page-title">Properties</h1>
 
-        {/* Search Bar - directly embedded */}
         <div className="search-bar">
           <div className="field">
             <span className="icon">📍</span>
@@ -132,7 +126,6 @@ const PropertyListingPage = () => {
 
         <div className="content-wrapper">
           <aside className="filters">
-            {/* Filters as before */}
             <div className="filter-section">
               <h3>Filter by:</h3>
               <div className="filter-group">
@@ -200,7 +193,7 @@ const PropertyListingPage = () => {
 
           <section className="property-list">
             {filteredProperties.map(property => (
-              <div className="property-card" key={property.id}>
+              <Link to={`/properties/${property.id}`} className="property-card" key={property.id}>
                 <img
                   src={property.imageUrl}
                   alt={property.name}
@@ -216,7 +209,7 @@ const PropertyListingPage = () => {
                   </p>
                   <p className="price">${property.price.toLocaleString()}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </section>
         </div>
