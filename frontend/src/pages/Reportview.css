@@ -10,8 +10,8 @@ body {
   flex-direction: column;
 }
 
-.header {
-  background-color: #000000;
+.reportviewheader {
+  background-color: #0284c7;
   color: #ffffff;
   padding: 20px;
   display: flex;
@@ -30,7 +30,7 @@ body {
 }
 
 .profile-button {
-  background: white;
+  
   color: black;
   border-radius: 25px;
   padding: 10px 20px;
@@ -40,10 +40,10 @@ body {
   gap: 8px;
 }
 
-.main {
+.reportmain {
   padding: 40px;
-  background: linear-gradient(to bottom, #000000 20%, #ffffff 20%);
-  min-height: 100vh;
+  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  min-height: 63vh;
 }
 
 .welcome-text {

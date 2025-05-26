@@ -1,16 +1,17 @@
 import React from 'react';
 import './Reportview.css';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer/Footer';
 const ReportDetailsPage = () => {
     const navigate = useNavigate();
   return (
     <div className="page-container">
-      <header className="header">
+      <header className="reportviewheader">
         <div className="logo">HORIZONSTAY</div>
         <div className="profile-button">Moin Khan <span className="profile-icon">👤</span></div>
       </header>
 
-      <main className="main">
+      <main className="reportmain">
         <h1 className="welcome-text">Welcome</h1>
 
         <div className="reports-box">
@@ -32,6 +33,7 @@ const ReportDetailsPage = () => {
           <button className="back-button" onClick={() => navigate('/admindashboard/reports')}>Back</button>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

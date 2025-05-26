@@ -1,6 +1,7 @@
 import React from 'react';
 import './Reportlist.css';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer/Footer';
 const ReportsPage = () => {
     const navigate = useNavigate();
   return (
@@ -29,6 +30,7 @@ const ReportsPage = () => {
           <button className="back-button" onClick={() => navigate('/admindashboard')}>Back</button>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };
