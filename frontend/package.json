@@ -9,12 +9,13 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0",
-    "react-toastify": "^11.0.5"
-  },
+"dependencies": {
+  "react": "^19.1.0",
+  "react-dom": "^19.1.0",
+  "react-router-dom": "^7.6.0",
+  "react-toastify": "^11.0.5",
+  "react-confirm-alert": "^3.0.6"
+},
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.5",

@@ -201,7 +201,11 @@ const GuestDashboard = () => {
   <h4><a href="/guest-profile">Manage Account</a></h4>
   <p>Personal Details</p>
 </div>
-            <div className="link-card"> <h4>Travel Activity</h4> <p>Reservation History</p> </div>
+<div className="link-card">
+  <h4><a href="/reservation-history">Reservation History</a></h4>
+  <p>View and manage your past and upcoming bookings.</p>
+</div>
+
             <div className="link-card"> <h4>Review Hotels</h4> <p>Review Visited Hotels</p> </div>
           </section>
 

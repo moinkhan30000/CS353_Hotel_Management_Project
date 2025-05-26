@@ -27,6 +27,8 @@ import ReportsPage from './pages/Reportlist';
 import ReportDetailsPage from './pages/Reportview';
 import GuestPaymentHistory from './pages/GuestPaymentHistory';
 import GuestProfile from './pages/GuestProfile';
+import GuestReservationHistory from './pages/GuestReservationHistory';
+
 
 function App() {
   return (
@@ -58,6 +60,8 @@ function App() {
         <Route path="/admindashboard/reports/view" element={<ReportDetailsPage />} />
         <Route path="/payment-history" element={<GuestPaymentHistory />} />
         <Route path="/guest-profile" element={<GuestProfile />} />
+        <Route path="/reservation-history" element={<GuestReservationHistory />} />
+
 
       </Routes>
       <ToastContainer position="top-center" autoClose={2000} />
