@@ -27,7 +27,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="button-section">
-          <button className="dashboard-button" >Generate Report</button>
+          <button className="dashboard-button" onClick={() => navigate('/admindashboard/reports/view')}>Generate Report</button>
           
           <button className="dashboard-button" onClick={() => navigate('/admindashboard/reports')}>Report List</button>
         </div>

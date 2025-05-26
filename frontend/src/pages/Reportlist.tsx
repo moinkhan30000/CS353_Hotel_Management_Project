@@ -21,7 +21,7 @@ const ReportsPage = () => {
           <div className="report-row">
             <div className="report-details">Report Id | Date | Time</div>
             <div className="report-actions">
-              <button className="edit-button">Edit</button>
+              
               <button className="download-button" onClick={() => navigate('/admindashboard/reports/view')}>View</button>
             </div>
           </div>
