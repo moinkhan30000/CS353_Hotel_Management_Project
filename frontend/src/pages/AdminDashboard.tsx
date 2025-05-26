@@ -1,7 +1,9 @@
 import React from "react";
 import "./AdminDashboard.css";
 import Footer from '../components/Footer/Footer';
+import { useNavigate } from 'react-router-dom';
 const AdminDashboard = () => {
+    const navigate = useNavigate();
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -25,9 +27,9 @@ const AdminDashboard = () => {
         </div>
 
         <div className="button-section">
-          <button className="dashboard-button">Generate Report</button>
+          <button className="dashboard-button" >Generate Report</button>
           
-          <button className="dashboard-button">Report List</button>
+          <button className="dashboard-button" onClick={() => navigate('/admindashboard/reports')}>Report List</button>
         </div>
         
       </main>
