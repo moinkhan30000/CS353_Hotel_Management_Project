@@ -79,8 +79,20 @@
   transform: translateX(-50%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  width: 80%;
-  max-width: 700px;
+  width: 90%;
+  max-width: 500px;
+  animation: scaleFade 0.2s ease;
+}
+
+@keyframes scaleFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* === Guest Info Display === */
@@ -185,4 +197,41 @@
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* === Redeem Points Modal Specific === */
+.popup input.transaction-row {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.popup input.transaction-row::placeholder {
+  color: #aaa;
+  font-weight: normal;
+}
+
+/* === Toastify Custom Styling === */
+.Toastify__toast {
+  font-size: 0.95rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.Toastify__toast--success {
+  background: #e6f9f0;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.Toastify__toast--error {
+  background: #fdecea;
+  color: #c62828;
+  font-weight: 600;
 }

@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "react-confirm-alert": "^3.0.6"
+    "react-confirm-alert": "^3.0.6",
+    "react-modal": "^3.16.3",
+    "react-model": "^4.3.1"
   }
 }

@@ -1,0 +1,119 @@
+/* === Container === */
+.payment-history-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* === Title === */
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* === Input Fields === */
+.transaction-row {
+  background-color: #f2f2f2;
+  color: #333;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  width: 100%;
+  border: none;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.transaction-row::placeholder {
+  color: #888;
+  font-weight: bold;
+}
+
+/* === Buttons === */
+.pay-button,
+.close-button {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pay-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.pay-button:hover {
+  background-color: #0056b3;
+}
+
+.close-button {
+  background-color: #ccc;
+  color: #000;
+}
+
+.close-button:hover {
+  background-color: #999;
+}
+
+.payment-history-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* === Modal Overlay === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === Modal Box === */
+.modal-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: scaleFade 0.25s ease-out;
+}
+
+.modal-box h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.modal-box p {
+  font-size: 1rem;
+  margin: 0.4rem 0;
+}
+
+.modal-box hr {
+  margin: 1rem 0;
+}
+
+@keyframes scaleFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

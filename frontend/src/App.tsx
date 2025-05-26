@@ -28,6 +28,8 @@ import ReportDetailsPage from './pages/Reportview';
 import GuestPaymentHistory from './pages/GuestPaymentHistory';
 import GuestProfile from './pages/GuestProfile';
 import GuestReservationHistory from './pages/GuestReservationHistory';
+import GuestReviewPage from './pages/GuestReviewPage';
+import GuestTopUpPage from './pages/GuestTopUpPage';
 
 
 function App() {
@@ -61,6 +63,8 @@ function App() {
         <Route path="/payment-history" element={<GuestPaymentHistory />} />
         <Route path="/guest-profile" element={<GuestProfile />} />
         <Route path="/reservation-history" element={<GuestReservationHistory />} />
+        <Route path="/guest-reviews" element={<GuestReviewPage />} />
+        <Route path="/guest-topup" element={<GuestTopUpPage />} />
 
 
       </Routes>
