@@ -26,9 +26,9 @@ const PropertyListingPage = () => {
   const [location, setLocation] = useState(searchParams.get('search') ?? '');
   const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   const dayAfter = new Date(Date.now() + 172800000).toISOString().slice(0, 10);
-  const [checkIn, setCheckIn] = useState(tomorrow);
-  const [checkOut, setCheckOut] = useState(dayAfter);
-  const [guests, setGuests] = useState('1');
+  const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || tomorrow);
+  const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || dayAfter);
+  const [guests, setGuests] = useState(searchParams.get('guests') || '1');
 
   const [budgetFilter, setBudgetFilter] = useState<number | null>(null);
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);

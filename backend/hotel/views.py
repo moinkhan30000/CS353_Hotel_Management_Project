@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import Amenity, Booking, Hotel, HotelImage, LoyaltyMembership, Report, Review, Room, Transaction, Wallet
 from .permissions import IsAdminRole, IsGuestRole, IsManagerRole
-from .serializers import AmenitySerializer, BookingSerializer, HotelImageSerializer, HotelSerializer, LoginSerializer, PasswordChangeSerializer, PasswordResetConfirmSerializer, RegistrationSerializer, ReportSerializer, ReviewSerializer, RoomSerializer, UserSerializer, WalletSerializer
+from .serializers import AmenitySerializer, BookingSerializer, HotelImageSerializer, HotelSerializer, LoginSerializer, NewsletterSubscriptionSerializer, PasswordChangeSerializer, PasswordResetConfirmSerializer, RegistrationSerializer, ReportSerializer, ReviewSerializer, RoomSerializer, UserSerializer, WalletSerializer
 
 User = get_user_model()
 
@@ -193,6 +193,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
 @permission_classes([permissions.AllowAny])
 def health(request):
     return Response({'status': 'ok'})
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def subscribe(request):
+    serializer = NewsletterSubscriptionSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response({'detail': 'You are subscribed to HorizonStay updates.'}, status=201)
 
 
 @api_view(['GET'])

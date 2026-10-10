@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from .models import Booking, Hotel, LoyaltyMembership, ManagerProfile, Review, Room, User, Wallet
+from .models import Booking, Hotel, LoyaltyMembership, ManagerProfile, NewsletterSubscription, Review, Room, User, Wallet
 
 
 class HotelApiTests(APITestCase):
@@ -25,6 +25,13 @@ class HotelApiTests(APITestCase):
         response = self.client.get('/api/v1/hotels/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]['name'], 'Test Hotel')
+
+    def test_public_can_subscribe_once(self):
+        first = self.client.post('/api/v1/newsletter/subscribe/', {'email': 'traveler@example.com'})
+        second = self.client.post('/api/v1/newsletter/subscribe/', {'email': 'traveler@example.com'})
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(second.status_code, 201)
+        self.assertEqual(NewsletterSubscription.objects.filter(email='traveler@example.com').count(), 1)
 
     def test_guest_can_create_and_pay_for_booking(self):
         self.authenticate('guest@test.local', 'Guest123!')

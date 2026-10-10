@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import './Header.css';
 
 interface HeaderProps {
@@ -9,12 +9,13 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ hideLogin = false, hideRegister = false }) => {
   return (
     <header className="nav">
-      <div className="logo">HORIZONSTAY</div>
+      <Link to="/" className="logo">HORIZONSTAY</Link>
       <nav>
-        <Link to="/">Home</Link>
-        {!hideLogin && <Link to="/login">Login</Link>}
-        {!hideRegister && <Link to="/register">Register</Link>}
-        <Link to="/contact">Contact</Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/properties">Stays</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
+        {!hideLogin && <NavLink to="/login">Login</NavLink>}
+        {!hideRegister && <Link className="nav-cta" to="/register">Register</Link>}
       </nav>
     </header>
   );

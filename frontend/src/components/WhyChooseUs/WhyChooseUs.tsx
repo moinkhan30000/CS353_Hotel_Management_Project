@@ -1,28 +1,5 @@
 import './WhyChooseUs.css';
 
-const WhyChooseUs = () => {
-  return (
-    <section className="why-us">
-      <h2>WHY CHOOSE US?</h2>
-      <div className="features">
-        <div>
-          <span>💲</span>
-          <h3>Competitive Prices</h3>
-          <p>Great value for every booking.</p>
-        </div>
-        <div>
-          <span>🔒</span>
-          <h3>Secure Booking</h3>
-          <p>Encrypted, trusted systems.</p>
-        </div>
-        <div>
-          <span>⚡</span>
-          <h3>Seamless Experience</h3>
-          <p>Fast, simple, and hassle-free.</p>
-        </div>
-      </div>
-    </section>
-  );
-};
+const WhyChooseUs = () => <section className="why-us"><span className="eyebrow">Why HorizonStay</span><h2>Booking should feel this simple.</h2><div className="features"><div><span>01</span><h3>Honest value</h3><p>Clear prices and practical choices for every trip.</p></div><div><span>02</span><h3>Secure booking</h3><p>Protected accounts and dependable wallet payments.</p></div><div><span>03</span><h3>One smooth journey</h3><p>Search, reserve, manage, and review in one place.</p></div></div></section>;
 
 export default WhyChooseUs;

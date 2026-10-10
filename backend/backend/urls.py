@@ -18,8 +18,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
+from django.http import JsonResponse
+
+
+def api_index(request):
+    return JsonResponse({'name': 'HorizonStay API', 'status': 'ok', 'api': '/api/v1/', 'admin': '/admin/'})
 
 urlpatterns = [
+    path('', api_index),
     path('admin/', admin.site.urls),
     path('api/v1/', include('hotel.urls')),
 ]

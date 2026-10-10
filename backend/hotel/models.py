@@ -144,3 +144,8 @@ class Report(models.Model):
     title = models.CharField(max_length=255)
     content = models.JSONField(default=dict)
     generated_at = models.DateTimeField(auto_now_add=True)
+
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)

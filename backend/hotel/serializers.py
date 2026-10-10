@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import Amenity, Booking, BookingGuest, GuestProfile, Hotel, HotelImage, LoyaltyMembership, ManagerProfile, Report, Review, Room, Transaction, Wallet
+from .models import Amenity, Booking, BookingGuest, GuestProfile, Hotel, HotelImage, LoyaltyMembership, ManagerProfile, NewsletterSubscription, Report, Review, Room, Transaction, Wallet
 
 User = get_user_model()
 
@@ -216,3 +216,14 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('id', 'title', 'content', 'generated_at')
+
+
+class NewsletterSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsletterSubscription
+        fields = ('email',)
+        extra_kwargs = {'email': {'validators': []}}
+
+    def create(self, validated_data):
+        subscription, _ = NewsletterSubscription.objects.get_or_create(email=validated_data['email'].lower())
+        return subscription
