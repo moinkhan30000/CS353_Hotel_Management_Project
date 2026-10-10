@@ -1,19 +1,29 @@
-import React from "react";
 import "./AdminDashboard.css";
 import Footer from '../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
+import { api, currentUser, logout } from '../services/api';
 const AdminDashboard = () => {
     const navigate = useNavigate();
+    const user = currentUser();
+    const generateReport = async () => {
+      try {
+        const report = await api('/reports/', { method: 'POST', body: JSON.stringify({ title: 'Platform report' }) });
+        localStorage.setItem('selectedReport', JSON.stringify(report));
+        navigate('/admindashboard/reports/view');
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Unable to generate report.');
+      }
+    };
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="logo">HORIZONSTAY</div>
         <nav className="nav-links">
-          <a href="/">Logout</a>
+          <a href="/" onClick={logout}>Logout</a>
           <a href="#">Hotels</a>
         </nav>
         <div className="profile">
-          <span className="profile-name">Moin Khan</span>
+          <span className="profile-name">{user ? `${user.first_name} ${user.last_name}` : 'Administrator'}</span>
           <span className="profile-icon">👤</span>
         </div>
       </header>
@@ -27,7 +37,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="button-section">
-          <button className="dashboard-button" onClick={() => navigate('/admindashboard/reports/view')}>Generate Report</button>
+          <button className="dashboard-button" onClick={generateReport}>Generate Report</button>
           
           <button className="dashboard-button" onClick={() => navigate('/admindashboard/reports')}>Report List</button>
         </div>

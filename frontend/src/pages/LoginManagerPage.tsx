@@ -4,6 +4,7 @@ import './LoginManagerPage.css';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import { api, login } from '../services/api';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -19,11 +20,13 @@ const LoginPage = () => {
       return;
     }
 
-    if (email === 'test@example.com' && password === 'password123') {
+    try {
+      await login(email, password, 'manager');
       setError('');
-      setTimeout(() => navigate('/managerhoteldashboard'), 2000);
-    } else {
-      setError('Invalid email or password.');
+      const hotel = await api<unknown | null>('/hotels/mine/');
+      navigate(hotel ? '/managerhoteldashboard' : '/managerdashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to log in.');
     }
   };
 

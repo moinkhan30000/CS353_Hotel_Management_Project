@@ -1,37 +1,31 @@
-import React from 'react';
-import './Reportview.css';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer/Footer';
+import { currentUser } from '../services/api';
+import './Reportview.css';
+
 const ReportDetailsPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const user = currentUser();
+  const report = JSON.parse(localStorage.getItem('selectedReport') ?? 'null') as { id: number; title: string; content: Record<string, unknown>; generated_at: string } | null;
+
   return (
     <div className="page-container">
       <header className="reportviewheader">
         <div className="logo">HORIZONSTAY</div>
-        <div className="profile-button">Moin Khan <span className="profile-icon">👤</span></div>
+        <div className="profile-button">{user ? `${user.first_name} ${user.last_name}` : 'Administrator'} <span className="profile-icon">User</span></div>
       </header>
-
       <main className="reportmain">
         <h1 className="welcome-text">Welcome</h1>
-
         <div className="reports-box">
           <h2 className="reports-title">Report</h2>
-          <p>
-            Discover the perfect blend of comfort, elegance, and calm at Oasis Hotel.
-            Designed as a sanctuary amidst the city’s bustle, Oasis offers beautifully
-            appointed rooms, a serene courtyard garden, and world-class hospitality.
-            Wake up to peaceful mornings, indulge in gourmet dining at our signature
-            restaurant, or unwind in our rooftop pool with skyline views. Whether you’re
-            here for a quick escape or an extended stay, Oasis Hotel welcomes you to relax,
-            recharge, and feel at home.
-          </p>
-          <p><strong>Report ID:</strong> 39495347</p>
+          {report ? <>
+            <p><strong>{report.title}</strong></p>
+            <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(report.content, null, 2)}</pre>
+            <p><strong>Report ID:</strong> {report.id}</p>
+            <p><strong>Generated:</strong> {new Date(report.generated_at).toLocaleString()}</p>
+          </> : <p>Select or generate a report first.</p>}
         </div>
-
-        <div className="button-group">
-          
-          <button className="back-button" onClick={() => navigate('/admindashboard/reports')}>Back</button>
-        </div>
+        <div className="button-group"><button className="back-button" onClick={() => navigate('/admindashboard/reports')}>Back</button></div>
       </main>
       <Footer />
     </div>

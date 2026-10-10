@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import './ResetPasswordPage.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import { api } from '../services/api';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
@@ -24,14 +25,12 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    // Simulate API response (you'll replace this with real fetch later)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    if (token === 'validtoken123') {
-      setMessage('Password reset successfully. You may now log in.');
+    try {
+      const result = await api<{ detail: string }>('/auth/password-reset/confirm/', { method: 'POST', body: JSON.stringify({ token, password: newPassword }) });
+      setMessage(result.detail);
       setError('');
-    } else {
-      setError('Invalid or expired token.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to reset password.');
       setMessage('');
     }
   };

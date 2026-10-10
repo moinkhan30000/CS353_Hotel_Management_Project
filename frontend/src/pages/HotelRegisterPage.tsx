@@ -3,6 +3,7 @@ import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './HotelRegisterPage.css';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 
 
 interface RoomData {
@@ -106,10 +107,27 @@ const HotelRegisterPage = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Hotel Registered Successfully!');
-    
+    try {
+      const savedAmenities = await Promise.all(amenities.map(name => api<{ id: number }>('/amenities/', { method: 'POST', body: JSON.stringify({ name }) })));
+      const hotel = await api<{ id: number }>('/hotels/', {
+        method: 'POST',
+        body: JSON.stringify({ name: hotelName, email, phone_number: phone, address, country, city, amenity_ids: savedAmenities.map(item => item.id) }),
+      });
+      await Promise.all(rooms.map(item => api('/rooms/', {
+        method: 'POST',
+        body: JSON.stringify({ name: item.type, room_type: item.type, quantity: Number(item.count), capacity: Number(item.capacity), price: Number(item.price), amenity_ids: savedAmenities.filter((_, index) => item.amenities.includes(amenities[index])).map(value => value.id) }),
+      })));
+      await Promise.all(images.map(image => {
+        const data = new FormData();
+        data.append('image', image);
+        return api(`/hotels/${hotel.id}/images/`, { method: 'POST', body: data });
+      }));
+      navigate('/managerhoteldashboard');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unable to register hotel.');
+    }
   };
 
   return (
@@ -220,7 +238,7 @@ const HotelRegisterPage = () => {
               </div>
             )}
 
-            <button type="submit" onClick={() => navigate('/managerhoteldashboard')}>Register</button>
+            <button type="submit">Register</button>
           </form>
         </div>
       </div>

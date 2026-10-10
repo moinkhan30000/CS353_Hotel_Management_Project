@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './GuestDashboard.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 
 const GuestTopUpPage = () => {
   const [amount, setAmount] = useState('');
@@ -14,8 +15,12 @@ const GuestTopUpPage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const walletId = '39495347';
-  const currentBalance = 2763.25;
+  const [currentBalance, setCurrentBalance] = useState(0);
+  const [transactionId, setTransactionId] = useState('');
+
+  useEffect(() => {
+    api<{ balance: string }>('/wallet/').then(value => setCurrentBalance(Number(value.balance))).catch(err => toast.error(err instanceof Error ? err.message : 'Unable to load wallet.'));
+  }, []);
 
   const isValidCardDetails = () => {
     const cardRegex = /^\d{16}$/;
@@ -49,9 +54,16 @@ const GuestTopUpPage = () => {
     return true;
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!isValidCardDetails()) return;
-    setShowPopup(true);
+    try {
+      const wallet = await api<{ balance: string; transactions: { id: number }[] }>('/wallet/top-up/', { method: 'POST', body: JSON.stringify({ amount: Number(amount) }) });
+      setCurrentBalance(Number(wallet.balance));
+      setTransactionId(String(wallet.transactions[wallet.transactions.length - 1]?.id ?? ''));
+      setShowPopup(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Top-up failed.');
+    }
   };
 
   const handleClose = () => {
@@ -82,7 +94,7 @@ const GuestTopUpPage = () => {
         <main className="dashboard-main styled-background">
           <h2 className="dashboard-title">Top-Up</h2>
           <div className="payment-history-container">
-            <p><strong>Wallet ID:</strong> {walletId}</p>
+            <p><strong>Wallet:</strong> Guest wallet</p>
             <p><strong>Current Balance:</strong> {currentBalance.toFixed(2)}</p>
             <input
               className="transaction-row"
@@ -142,7 +154,7 @@ const GuestTopUpPage = () => {
                 <hr />
                 <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                   <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Top-Up Successful</p>
-                  <p><strong>Transaction ID:</strong> 9328448AFK</p>
+                  <p><strong>Transaction ID:</strong> {transactionId}</p>
                   <p><strong>Status:</strong> Successful</p>
                   <p><strong>Transaction Amount:</strong> {parseFloat(amount).toFixed(2).toLocaleString()} TL</p>
                   <p><strong>Method of Payment:</strong> Credit Card</p>

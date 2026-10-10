@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import './ForgotPasswordPage.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import { api } from '../services/api';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email) {
@@ -16,12 +17,12 @@ const ForgotPasswordPage = () => {
       return;
     }
 
-    // Simulated API call
-    if (email === 'test@example.com') {
-      setMessage('Password reset link has been sent to your email.');
+    try {
+      const result = await api<{ detail: string }>('/auth/password-reset/', { method: 'POST', body: JSON.stringify({ email }) });
+      setMessage(result.detail);
       setError('');
-    } else {
-      setError('No user found with this email.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to request a reset link.');
       setMessage('');
     }
   };

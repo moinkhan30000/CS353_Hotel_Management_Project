@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './GuestDashboard.css';
-import './GuestPaymentHistory.css'; // optional if you extract CSS
+import './GuestPaymentHistory.css';
+import { api } from '../services/api';
 
 interface Transaction {
-  id: string;
-  status: 'Completed' | 'Pending' | 'Failed';
-  amount: number;
-  type: 'Reservation' | 'Top-up' | 'Penalty';
+  id: number;
+  status: string;
+  amount: string;
+  transaction_type: string;
 }
 
 const GuestPaymentHistory = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: 'TXN12345', status: 'Completed', amount: 150, type: 'Reservation' },
-    { id: 'TXN12346', status: 'Completed', amount: 300, type: 'Top-up' },
-    { id: 'TXN12347', status: 'Failed', amount: 200, type: 'Reservation' },
-    { id: 'TXN12348', status: 'Completed', amount: 20, type: 'Penalty' },
-  ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    api<{ transactions: Transaction[] }>('/wallet/').then(value => setTransactions(value.transactions));
+  }, []);
 
   const clearHistory = () => {
     setTransactions([]);
@@ -48,7 +48,7 @@ const GuestPaymentHistory = () => {
 
             {transactions.map((txn, index) => (
               <div key={index} className="transaction-row">
-                {txn.id} | {txn.status} | {txn.amount} TL | {txn.type}
+                {txn.id} | {txn.status} | {Number(txn.amount).toFixed(2)} | {txn.transaction_type.replace('_', ' ')}
               </div>
             ))}
 

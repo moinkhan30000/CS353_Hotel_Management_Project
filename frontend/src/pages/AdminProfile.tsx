@@ -1,4 +1,3 @@
-import React from "react";
 import "./AdminProfile.css";
 import Footer from '../components/Footer/Footer';
 const AdminProfile = () => {

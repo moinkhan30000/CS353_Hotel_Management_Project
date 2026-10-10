@@ -1,100 +1,54 @@
-# 🏨 CS353 Hotel Management Project
+# HorizonStay Hotel Management
 
-A full-stack hotel management system built using:
+HorizonStay is a React and Django hotel-management application with guest, manager, and administrator workflows.
 
-- ⚛️ **Frontend**: Vite + React + TypeScript  
-- 🐍 **Backend**: Django + Django REST Framework  
-- 🐬 **Database**: MySQL  
-- 🐳 **Containerized** with Docker and Docker Compose
+## Run with Docker
 
----
+1. Copy `.env.example` to `.env` and adjust values if needed.
+2. Run `docker compose up --build`.
+3. Open `http://localhost:5173`.
 
-## 🚀 Quick Start
+The API is available at `http://localhost:8000/api/v1/`. Docker applies migrations and loads repeatable demo data when the backend starts.
 
-### 📦 Requirements
+## Demo accounts
 
-- [Docker](https://www.docker.com/products/docker-desktop)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Git](https://git-scm.com/)
+| Role | Email | Password |
+| --- | --- | --- |
+| Guest | `guest@hotel.test` | `Guest123!` |
+| Manager | `manager@hotel.test` | `Manager123!` |
+| Admin | `admin@hotel.test` | `Admin123!` |
 
-### 📥 Clone and Run
+These accounts are for local development only.
 
-```bash
-# Clone the repository
-git clone https://github.com/moinkhan30000/CS353_Hotel_Management_Project.git
-cd CS353_Hotel_Management_Project
+## Run locally
 
-# Build and run the app
-docker-compose up --build
-```
-
----
-
-## 🌐 Access the Application
-
-| Service     | URL                             |
-|-------------|----------------------------------|
-| Frontend    | [http://localhost:5173](http://localhost:5173) |
-| Backend API | [http://localhost:8000](http://localhost:8000) |
-
----
-
-## 🐳 Docker Services
-
-| Container   | Description           | Port   |
-|-------------|-----------------------|--------|
-| `frontend`  | React app via Vite    | 5173   |
-| `backend`   | Django REST API       | 8000   |
-| `mysql_db`  | MySQL database server | 3306   |
-
----
-
-## 📁 Project Structure
-
-```
-CS353_Hotel_Management_Project/
-├── frontend/       # Vite + React frontend
-├── backend/        # Django backend
-├── docker-compose.yml
-└── README.md
-```
-
----
-
-## 🛠 Useful Commands
-
-### 🔧 Docker
+Backend:
 
 ```bash
-# Rebuild containers without cache
-docker-compose build --no-cache
-
-# Stop containers
-docker-compose down
-
-# Open shell in Django container
-docker-compose exec backend sh
+cd backend
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_demo
+python manage.py runserver
 ```
 
-### 🐍 Django Management
+Frontend:
 
 ```bash
-# Run migrations
-docker-compose exec backend python manage.py migrate
-
-# Create a superuser
-docker-compose exec backend python manage.py createsuperuser
+cd frontend
+npm ci --legacy-peer-deps
+npm run dev
 ```
 
----
+## Checks
 
-## 📄 License
+```bash
+cd backend
+python manage.py test
 
-Licensed under the [MIT License](LICENSE)
+cd ../frontend
+npm run lint
+npm run build
+```
 
----
-
-## 🙋‍♂️ Author
-
-**moinkhan30000**  
-[GitHub Profile](https://github.com/moinkhan30000)
+Local development defaults to SQLite when `DB_ENGINE` is not set. Docker uses MySQL.
