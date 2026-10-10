@@ -1,8 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenRefreshView
-
-from .views import AmenityViewSet, BookingViewSet, HotelImageViewSet, HotelViewSet, LoginView, ProfileView, RegisterView, ReviewViewSet, RoomViewSet, change_password, confirm_password_reset, health, loyalty, redeem_points, reports, request_password_reset, subscribe, top_up, wallet
+from .views import AmenityViewSet, BookingViewSet, HotelImageViewSet, HotelViewSet, LoginView, ProfileView, RefreshView, RegisterView, ReviewViewSet, RoomViewSet, change_password, confirm_password_reset, health, logout_view, loyalty, redeem_points, reports, request_password_reset, subscribe, top_up, wallet
 
 router = DefaultRouter()
 router.register('hotels', HotelViewSet)
@@ -17,7 +15,8 @@ urlpatterns = [
     path('newsletter/subscribe/', subscribe),
     path('auth/register/', RegisterView.as_view()),
     path('auth/login/', LoginView.as_view()),
-    path('auth/refresh/', TokenRefreshView.as_view()),
+    path('auth/refresh/', RefreshView.as_view()),
+    path('auth/logout/', logout_view),
     path('auth/password-reset/', request_password_reset),
     path('auth/password-reset/confirm/', confirm_password_reset),
     path('profile/', ProfileView.as_view()),

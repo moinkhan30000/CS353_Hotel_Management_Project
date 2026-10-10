@@ -33,7 +33,26 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json');
   const access = localStorage.getItem('accessToken');
   if (access) headers.set('Authorization', `Bearer ${access}`);
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  let response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  if (response.status === 401 && path !== '/auth/login/' && path !== '/auth/refresh/') {
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      const refreshed = await fetch(`${API_URL}/auth/refresh/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh }),
+      });
+      if (refreshed.ok) {
+        const tokens = await refreshed.json() as { access: string; refresh?: string };
+        localStorage.setItem('accessToken', tokens.access);
+        if (tokens.refresh) localStorage.setItem('refreshToken', tokens.refresh);
+        headers.set('Authorization', `Bearer ${tokens.access}`);
+        response = await fetch(`${API_URL}${path}`, { ...options, headers });
+      } else {
+        clearSession();
+      }
+    }
+  }
   if (!response.ok) throw new Error(await readError(response));
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
@@ -51,10 +70,24 @@ export async function login(email: string, password: string, expectedRole: Role)
   return result.user;
 }
 
-export function logout() {
+function clearSession() {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('currentUser');
+}
+
+export function logout() {
+  const access = localStorage.getItem('accessToken');
+  const refresh = localStorage.getItem('refreshToken');
+  if (access && refresh) {
+    void fetch(`${API_URL}/auth/logout/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${access}` },
+      body: JSON.stringify({ refresh }),
+      keepalive: true,
+    });
+  }
+  clearSession();
 }
 
 export function currentUser(): CurrentUser | null {

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -53,6 +55,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if attrs['role'] == User.Role.GUEST and (not attrs.get('date_of_birth') or not attrs.get('identity_number')):
             raise serializers.ValidationError('Guests must provide a date of birth and identity number.')
         return attrs
+
+    def validate_password(self, value):
+        user = User(
+            email=self.initial_data.get('email', ''),
+            first_name=self.initial_data.get('first_name', ''),
+            last_name=self.initial_data.get('last_name', ''),
+        )
+        try:
+            validate_password(value, user)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError(list(error.messages)) from error
+        return value
 
     @transaction.atomic
     def create(self, validated_data):
@@ -109,6 +123,16 @@ class HotelImageSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             return request.build_absolute_uri(obj.image.url) if request else obj.image.url
         return obj.image_url
+
+    def validate_image(self, value):
+        if not value:
+            return value
+        maximum = settings.MAX_HOTEL_IMAGE_SIZE
+        if value.size > maximum:
+            raise serializers.ValidationError(f'Image files must be no larger than {maximum // (1024 * 1024)} MB.')
+        if getattr(value, 'content_type', None) not in {'image/jpeg', 'image/png', 'image/webp'}:
+            raise serializers.ValidationError('Upload a JPEG, PNG, or WebP image.')
+        return value
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -168,6 +192,16 @@ class BookingSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         guests = validated_data.pop('guests', [])
+        room = Room.objects.select_for_update().get(pk=validated_data['room'].pk)
+        validated_data['room'] = room
+        clashes = Booking.objects.filter(
+            room=room,
+            status__in=[Booking.Status.PENDING, Booking.Status.CONFIRMED],
+            check_in__lt=validated_data['check_out'],
+            check_out__gt=validated_data['check_in'],
+        ).count()
+        if clashes >= room.quantity:
+            raise serializers.ValidationError('No rooms are available for those dates.')
         nights = (validated_data['check_out'] - validated_data['check_in']).days
         booking = Booking.objects.create(guest=self.context['request'].user, amount_due=validated_data['room'].price * nights, **validated_data)
         BookingGuest.objects.bulk_create([BookingGuest(booking=booking, **guest) for guest in guests])

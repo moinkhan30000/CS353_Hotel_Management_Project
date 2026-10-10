@@ -2,7 +2,7 @@
 
 HorizonStay is a full-stack hotel discovery, booking, and management application. It provides dedicated workflows for guests, hotel managers, and platform administrators through a responsive React interface backed by a Django REST API and MySQL.
 
-The project includes repeatable demo data, role-based access control, Docker-based setup, API persistence tests, and Selenium browser tests with desktop and mobile screenshots.
+The project includes repeatable demo data, backend-enforced role and ownership controls, Docker-based setup, API persistence and security tests, and Selenium browser tests with desktop and mobile screenshots.
 
 ## Features
 
@@ -37,6 +37,7 @@ The project includes repeatable demo data, role-based access control, Docker-bas
 
 - Guest, Manager, and Admin role-based authorization.
 - JWT access and refresh token authentication.
+- Automatic access-token refresh and refresh-token revocation on logout.
 - Registration, login, password reset, and password change workflows.
 - Newsletter subscription with duplicate prevention.
 - Responsive desktop and mobile layouts.
@@ -134,6 +135,14 @@ cp .env.example .env
 | `DJANGO_DEBUG` | Enable Django debug responses | `True` |
 | `DJANGO_ALLOWED_HOSTS` | Hosts accepted by Django | `localhost,127.0.0.1,backend` |
 | `CORS_ALLOWED_ORIGINS` | Frontend origins permitted by CORS | `http://localhost:5173` |
+| `FRONTEND_URL` | Frontend origin used in password-reset links | `http://localhost:5173` |
+| `DJANGO_SECURE_SSL_REDIRECT` | Redirect HTTP requests to HTTPS | `False` |
+| `DJANGO_SECURE_COOKIES` | Mark Django session and CSRF cookies as HTTPS-only | `False` |
+| `DJANGO_HSTS_SECONDS` | HTTP Strict Transport Security duration | `0` |
+| `DJANGO_TRUST_PROXY_SSL_HEADER` | Trust a configured reverse proxy's HTTPS header | `False` |
+| `JWT_ACCESS_MINUTES` | Access-token lifetime in minutes | `15` |
+| `JWT_REFRESH_DAYS` | Refresh-token lifetime in days | `1` |
+| `MAX_HOTEL_IMAGE_SIZE` | Maximum uploaded hotel-image size in bytes | `5242880` |
 | `DB_NAME` | MySQL database name | `hotel` |
 | `DB_USER` | MySQL application user | `hotel` |
 | `DB_PASSWORD` | MySQL application-user password | `hotel` |
@@ -192,7 +201,7 @@ All application endpoints are under `/api/v1/`.
 
 | Area | Main endpoints |
 | --- | --- |
-| Authentication | `/auth/register/`, `/auth/login/`, `/auth/refresh/` |
+| Authentication | `/auth/register/`, `/auth/login/`, `/auth/refresh/`, `/auth/logout/` |
 | Password recovery | `/auth/password-reset/`, `/auth/password-reset/confirm/` |
 | Profile | `/profile/`, `/profile/password/` |
 | Hotels | `/hotels/`, `/hotels/mine/`, `/hotel-images/` |
@@ -210,7 +219,7 @@ Permissions are enforced by role on the backend; hiding a frontend control is no
 
 ### Backend persistence tests
 
-The backend suite uses a disposable in-memory database and verifies that API writes are stored correctly. It covers registration, profiles, bookings, payments, cancellations, wallet transactions, loyalty points, hotels, amenities, room CRUD, reviews, reports, and newsletter subscriptions.
+The backend suite uses a disposable in-memory database and verifies both persistence and security boundaries. Its 19 tests cover registration, profiles, bookings, payments, cancellations, wallet transactions, loyalty points, hotels, amenities, room CRUD, reviews, reports, newsletter subscriptions, forbidden cross-role writes, ownership isolation, duplicate-payment prevention, password validation, upload rejection, and refresh-token revocation.
 
 With the Docker stack running:
 
@@ -293,9 +302,16 @@ docker compose up -d --build --force-recreate frontend
 
 - Docker stores MySQL data in the named `mysql_data` volume.
 - Uploaded development media, local databases, screenshots, environment files, and dependency folders are ignored by Git.
-- Demo passwords and Docker defaults must be replaced before any public deployment.
-- Set `DJANGO_DEBUG=False`, configure an appropriate `DJANGO_SECRET_KEY`, restrict allowed hosts and CORS origins, and use secure database credentials in production.
-- The included Docker configuration is optimized for local development rather than production deployment.
+- Authorization is enforced by the API. Guests cannot modify rooms or amenities, managers can modify only their own hotel's resources, and direct generic booking changes are restricted.
+- Wallet payments are accepted only for pending bookings. Database transactions and row locks protect booking availability, wallet balances, and loyalty-point updates against duplicate or concurrent writes.
+- Registration, password changes, and password resets use Django's server-side password validators.
+- Authentication and public write endpoints are rate-limited. Access tokens last 15 minutes by default; refresh tokens rotate and are blacklisted after rotation or logout.
+- Hotel uploads accept JPEG, PNG, and WebP images up to 5 MB by default. Pillow also validates that uploaded content is an image.
+- The top-up form is a demonstration flow. Card fields are validated only in the browser and are never transmitted to or stored by the API. A production system must use a PCI-compliant payment provider.
+- Profile records contain personal information such as phone number, date of birth, and identity number. Use encrypted production storage and backups, least-privilege database access, retention/deletion procedures, and an appropriate privacy policy when handling real user data.
+- The browser client currently stores JWTs in `localStorage`. Short lifetimes, rotation, and revocation reduce exposure, but an `HttpOnly`, `Secure`, `SameSite` cookie design with CSRF protection is the recommended next step for a public deployment.
+- Demo passwords, signing keys, and database defaults must be replaced before deployment. Set `DJANGO_DEBUG=False`, enable HTTPS settings, restrict allowed hosts and CORS origins, and run `python manage.py check --deploy` using the production environment.
+- The included Docker configuration uses Django and Vite development servers. Deploy behind HTTPS with a production WSGI/ASGI server and reverse proxy.
 
 ## License
 

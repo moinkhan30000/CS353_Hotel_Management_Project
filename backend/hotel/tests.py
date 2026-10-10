@@ -2,6 +2,8 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.cache import cache
 from rest_framework.test import APITestCase
 
 from .models import Amenity, Booking, GuestProfile, Hotel, LoyaltyMembership, ManagerProfile, NewsletterSubscription, Report, Review, Room, Transaction, User, Wallet
@@ -9,6 +11,7 @@ from .models import Amenity, Booking, GuestProfile, Hotel, LoyaltyMembership, Ma
 
 class HotelApiTests(APITestCase):
     def setUp(self):
+        cache.clear()
         self.manager = User.objects.create_user(username='manager@test.local', email='manager@test.local', password='Manager123!', role='manager')
         ManagerProfile.objects.create(user=self.manager)
         self.hotel = Hotel.objects.create(manager=self.manager, name='Test Hotel', city='Goa', country='India', address='Test Road', email='hotel@test.local', phone_number='9000000000')
@@ -91,14 +94,14 @@ class HotelApiTests(APITestCase):
             'first_name': 'New',
             'last_name': 'Guest',
             'phone_number': '9111111111',
-            'password': 'NewGuest123!',
+            'password': 'SecureTravel482!',
             'role': 'guest',
             'date_of_birth': '1998-04-12',
             'identity_number': '98765432101',
         }, format='json')
         self.assertEqual(response.status_code, 201)
         user = User.objects.get(email='newguest@test.local')
-        self.assertTrue(user.check_password('NewGuest123!'))
+        self.assertTrue(user.check_password('SecureTravel482!'))
         self.assertEqual(user.role, User.Role.GUEST)
         self.assertEqual(GuestProfile.objects.get(user=user).identity_number, '98765432101')
         self.assertEqual(Wallet.objects.get(user=user).balance, Decimal('0.00'))
@@ -110,7 +113,7 @@ class HotelApiTests(APITestCase):
             'first_name': 'New',
             'last_name': 'Manager',
             'phone_number': '9222222222',
-            'password': 'NewManager123!',
+            'password': 'SecureHotel482!',
             'role': 'manager',
         }, format='json')
         self.assertEqual(response.status_code, 201)
@@ -224,3 +227,73 @@ class HotelApiTests(APITestCase):
         self.assertIn('users', report.content)
         self.assertIn('bookings', report.content)
         self.assertIn('revenue', report.content)
+
+
+class SecurityHardeningTests(APITestCase):
+    def setUp(self):
+        cache.clear()
+        self.manager = User.objects.create_user(username='manager-security@test.local', email='manager-security@test.local', password='Manager123!', role=User.Role.MANAGER)
+        ManagerProfile.objects.create(user=self.manager)
+        self.hotel = Hotel.objects.create(manager=self.manager, name='Secure Hotel', city='Goa', country='India', address='Safe Road', email='secure@test.local', phone_number='9000000001')
+        self.room = Room.objects.create(hotel=self.hotel, name='Secure Room', room_type='Suite', capacity=2, quantity=1, price=Decimal('100.00'))
+        self.amenity = Amenity.objects.create(name='Secure Spa')
+        self.guest = User.objects.create_user(username='guest-security@test.local', email='guest-security@test.local', password='Guest123!', role=User.Role.GUEST)
+        GuestProfile.objects.create(user=self.guest, date_of_birth='1995-01-01', identity_number='SECURITY-1')
+        Wallet.objects.create(user=self.guest, balance=Decimal('1000.00'))
+        LoyaltyMembership.objects.create(user=self.guest)
+
+    def authenticate(self, user):
+        response = self.client.post('/api/v1/auth/login/', {'email': user.email, 'password': 'Guest123!' if user.role == User.Role.GUEST else 'Manager123!'})
+        self.assertEqual(response.status_code, 200)
+        self.refresh_token = response.data['refresh']
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
+
+    def test_guest_cannot_modify_rooms_amenities_or_booking_fields(self):
+        booking = Booking.objects.create(guest=self.guest, room=self.room, check_in=date.today() + timedelta(days=5), check_out=date.today() + timedelta(days=6), amount_due=Decimal('100.00'))
+        self.authenticate(self.guest)
+        self.assertEqual(self.client.patch(f'/api/v1/rooms/{self.room.id}/', {'price': '1.00'}, format='json').status_code, 403)
+        self.assertEqual(self.client.delete(f'/api/v1/amenities/{self.amenity.id}/').status_code, 403)
+        self.assertEqual(self.client.patch(f'/api/v1/bookings/{booking.id}/', {'check_out': date.today() + timedelta(days=20)}, format='json').status_code, 403)
+        self.room.refresh_from_db()
+        booking.refresh_from_db()
+        self.assertEqual(self.room.price, Decimal('100.00'))
+        self.assertEqual(booking.check_out, date.today() + timedelta(days=6))
+
+    def test_manager_cannot_modify_another_managers_room(self):
+        other = User.objects.create_user(username='other-manager@test.local', email='other-manager@test.local', password='Manager123!', role=User.Role.MANAGER)
+        ManagerProfile.objects.create(user=other)
+        Hotel.objects.create(manager=other, name='Other Hotel', city='Delhi', country='India', address='Other Road', email='other@test.local', phone_number='9000000002')
+        self.authenticate(other)
+        self.assertEqual(self.client.patch(f'/api/v1/rooms/{self.room.id}/', {'price': '1.00'}, format='json').status_code, 404)
+
+    def test_booking_cannot_be_paid_twice(self):
+        booking = Booking.objects.create(guest=self.guest, room=self.room, check_in=date.today() + timedelta(days=5), check_out=date.today() + timedelta(days=6), amount_due=Decimal('100.00'))
+        self.authenticate(self.guest)
+        self.assertEqual(self.client.post(f'/api/v1/bookings/{booking.id}/pay/').status_code, 200)
+        self.assertEqual(self.client.post(f'/api/v1/bookings/{booking.id}/pay/').status_code, 400)
+        self.guest.wallet.refresh_from_db()
+        self.guest.loyalty.refresh_from_db()
+        self.assertEqual(self.guest.wallet.balance, Decimal('900.00'))
+        self.assertEqual(self.guest.loyalty.points, 10)
+        self.assertEqual(Transaction.objects.filter(booking=booking, transaction_type=Transaction.Type.BOOKING).count(), 1)
+
+    def test_registration_uses_django_password_validation(self):
+        response = self.client.post('/api/v1/auth/register/', {
+            'email': 'weak@test.local', 'password': 'password', 'role': 'manager',
+            'first_name': 'Weak', 'last_name': 'Password',
+        }, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(email='weak@test.local').exists())
+
+    def test_invalid_image_upload_is_rejected(self):
+        self.authenticate(self.manager)
+        invalid = SimpleUploadedFile('not-an-image.txt', b'not an image', content_type='text/plain')
+        response = self.client.post(f'/api/v1/hotels/{self.hotel.id}/images/', {'image': invalid}, format='multipart')
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(self.hotel.images.exists())
+
+    def test_logout_blacklists_refresh_token(self):
+        self.authenticate(self.guest)
+        self.client.credentials()
+        self.assertEqual(self.client.post('/api/v1/auth/logout/', {'refresh': self.refresh_token}, format='json').status_code, 204)
+        self.assertEqual(self.client.post('/api/v1/auth/refresh/', {'refresh': self.refresh_token}, format='json').status_code, 401)
