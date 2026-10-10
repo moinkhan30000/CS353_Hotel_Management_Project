@@ -86,7 +86,7 @@ const PropertyListingPage = () => {
       {user ? (
         <PrivateHeader
           username={`${user.first_name} ${user.last_name}`.trim() || user.email}
-          onLogout={logout}
+          onLogout={() => { logout(); window.location.href = '/'; }}
         />
       ) : (
         <Header />

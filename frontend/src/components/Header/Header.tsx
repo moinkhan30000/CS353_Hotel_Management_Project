@@ -1,4 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
+import PrivateHeader from '../PrivateHeader/PrivateHeader';
+import { currentUser, logout } from '../../services/api';
 import './Header.css';
 
 interface HeaderProps {
@@ -7,6 +9,13 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ hideLogin = false, hideRegister = false }) => {
+  const user = currentUser();
+
+  if (user) {
+    const username = `${user.first_name} ${user.last_name}`.trim() || user.email;
+    return <PrivateHeader username={username} onLogout={() => { logout(); window.location.href = '/'; }} />;
+  }
+
   return (
     <header className="nav">
       <Link to="/" className="logo">HORIZONSTAY</Link>

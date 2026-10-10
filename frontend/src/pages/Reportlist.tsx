@@ -28,7 +28,7 @@ const ReportsPage = () => {
         <h1 className="welcome-text">Welcome</h1>
         <div className="reports-box">
           <h2 className="reports-title">Reports List</h2>
-          <div className="report-header">Report Id | Date | Title</div>
+          <div className="report-header">Report ID | Date | Title</div>
           {reports.map(report => (
             <div className="report-row" key={report.id}>
               <div className="report-details">{report.id} | {new Date(report.generated_at).toLocaleString()} | {report.title}</div>

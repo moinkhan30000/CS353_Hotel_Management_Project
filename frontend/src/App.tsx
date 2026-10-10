@@ -3,13 +3,9 @@ import type { ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import HomePage from './pages/HomePage';
-import LoginManagerPage from './pages/LoginManagerPage';
-import LoginGuestPage from './pages/LoginGuestPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import RegisterChoicePage from './pages/RegisterChoicePage';
-import RegisterManagerPage from './pages/RegisterManagerPage';
-import RegisterGuestPage from './pages/RegisterGuestPage';
 import HotelRegisterPage from './pages/HotelRegisterPage';
 import ManagerDashboard from './pages/ManagerDashboard';
 import ManagerDashboardwoHotel from './pages/ManagerDashboardwithouthotel';
@@ -21,7 +17,6 @@ import ManageBookingPage from './pages/ManageBookingPage';
 import EditHotelImagesPage from './pages/EditHotelImagesPage';
 import HotelReviewsPage from './pages/HotelReviewPage'; 
 import ManageRoomsPage from './pages/ManageRoomsPage';
-import LoginAdmin from './pages/LoginAdmin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProfile from './pages/AdminProfile';
 import ReportsPage from './pages/Reportlist';
@@ -51,13 +46,13 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/register" element={<RegisterChoicePage />} />
-        <Route path="/register/manager" element={<RegisterManagerPage />} />
-        <Route path="/register/guest" element={<RegisterGuestPage />} />
+        <Route path="/register/manager" element={<RegisterChoicePage initialRole="manager" />} />
+        <Route path="/register/guest" element={<RegisterChoicePage initialRole="guest" />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/manage-bookings" element={manager(<ManageBookingPage />)} />
         <Route path="/register/hotel" element={manager(<HotelRegisterPage />)} />
-        <Route path="/login/manager" element={<LoginManagerPage />} />
-        <Route path="/login/guest" element={<LoginGuestPage />} />
+        <Route path="/login/manager" element={<LoginchoicePage initialRole="manager" />} />
+        <Route path="/login/guest" element={<LoginchoicePage initialRole="guest" />} />
         <Route path="/managerdashboard" element={manager(<ManagerDashboardwoHotel />)} />
         <Route path="/managerhoteldashboard" element={manager(<ManagerDashboard />)} />
         <Route path="/managerprofile" element={manager(<ManagerProfilePage />)} />
@@ -65,7 +60,7 @@ function App() {
         <Route path="/edit-hotel-images" element={manager(<EditHotelImagesPage />)} />
         <Route path="/reviews" element={manager(<HotelReviewsPage />)} />
         <Route path="/rooms" element={manager(<ManageRoomsPage />)} />
-        <Route path="/login/admin" element={<LoginAdmin />} />
+        <Route path="/login/admin" element={<LoginchoicePage initialRole="admin" />} />
         <Route path="/admindashboard" element={admin(<AdminDashboard />)} />
         <Route path="/admindashboard/profile" element={admin(<AdminProfile />)} />
         <Route path="/admindashboard/reports" element={admin(<ReportsPage />)} />

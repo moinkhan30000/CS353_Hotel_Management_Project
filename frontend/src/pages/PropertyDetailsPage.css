@@ -30,7 +30,7 @@
 }
 
 .rating {
-  background: black;
+  background: var(--teal);
   color: white;
   padding: 5px 10px;
   border-radius: 20px;
@@ -151,7 +151,7 @@
 }
 
 .review-btn {
-  background: black;
+  background: var(--teal);
   color: white;
   border: none;
   padding: 6px 14px;

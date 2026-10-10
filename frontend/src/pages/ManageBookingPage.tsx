@@ -11,6 +11,8 @@ interface Booking {
   guests: { id: number; name: string; age: number }[];
 }
 
+const displayLabel = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+
 const ManageBookingPage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -44,7 +46,7 @@ const ManageBookingPage = () => {
             <span>{booking.check_in} – {booking.check_out}</span>
             <span>{booking.guests.length}</span>
             <div className="booking-actions">
-              <span>{booking.status}</span>
+              <span className="booking-status">{displayLabel(booking.status)}</span>
               {booking.status !== 'cancelled' && <button className="nav-button danger" onClick={() => cancelBooking(booking.id)}>Cancel</button>}
             </div>
           </div>)}

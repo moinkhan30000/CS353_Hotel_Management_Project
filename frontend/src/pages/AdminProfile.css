@@ -1,103 +1,59 @@
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background-color: #fff;
-}
-
 .profile-page {
   min-height: 100vh;
-  background:url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
+  background: linear-gradient(rgba(244, 248, 247, 0.68), rgba(244, 248, 247, 0.9)),
+    url('../assets/sanctuary.jpg') center / cover fixed;
 }
 
-.profile-header {
-  background-color: #0284c7;
-  color: white;
-  display: flex;
-  justify-content: space-between;
+.profile-main {
+  width: min(760px, calc(100% - 2rem));
+  margin: clamp(2rem, 7vw, 6rem) auto;
+  padding: clamp(1.5rem, 4vw, 3rem) !important;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow);
+}
+
+.profile-main h2 {
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.profile-row {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
   align-items: center;
-  padding: 20px 40px;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
 }
 
-.profile-header .logo {
-  font-weight: bold;
+.profile-row label {
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
-.profile-header nav a {
-  color: white;
-  margin: 0 15px;
-  text-decoration: none;
-  font-size: 14px;
+.profile-row span {
+  color: var(--navy);
+  overflow-wrap: anywhere;
 }
 
-.profile-user {
-  display: flex;
-  align-items: center;
-  
-  color: black;
-  border-radius: 30px;
-  padding: 6px 15px;
-  font-weight: bold;
-}
-
-.user-icon {
-  
-  color: white;
-  border-radius: 50%;
-  padding: 4px 8px;
-  margin-left: 10px;
-}
-
-.profile-content {
-  text-align: center;
-  padding-top: 40px;
-}
-
-.profile-card {
-  background-color: white;
-  width: 500px;
-  margin: 30px auto;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px #f0f8ff;
-}
-
-.profile-card h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-}
-
-.profile-field {
-  background-color: #e0e0e0;
-  color: #666;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 15px;
-  font-weight: 600;
-}
-
-.button-group {
-  margin-top: 20px;
-}
-
-.edit-btn {
-  background-color: black;
-  color: white;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-right: 15px;
-  cursor: pointer;
-}
-
-.access-btn {
-  background-color: #ff7a7a;
-  color: white;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 20px;
-  font-weight: bold;
-  cursor: pointer;
+.profile-row input {
   width: 100%;
-  margin-top: 10px;
+}
+
+.profile-main > button {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .profile-main {
+    margin: 1.25rem auto;
+  }
+
+  .profile-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
 }

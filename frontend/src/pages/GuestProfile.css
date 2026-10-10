@@ -9,8 +9,8 @@
 
 /* === Profile Fields === */
 .transaction-row {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #edf3f2;
+  color: var(--navy);
   padding: 0.75rem 1rem;
   border-radius: 999px;
   margin-bottom: 0.75rem;
@@ -53,7 +53,7 @@
 
 .payment-history-actions .pay-button,
 .payment-history-container .pay-button {
-  background-color: black;
+  background-color: var(--teal);
   color: white;
   border: none;
   padding: 0.5rem 1.2rem;
@@ -75,7 +75,7 @@
 
 .payment-history-actions .pay-button:hover,
 .payment-history-container .pay-button:hover {
-  background-color: #333;
+  background-color: var(--teal-dark);
 }
 
 .payment-history-actions .close-button:hover,

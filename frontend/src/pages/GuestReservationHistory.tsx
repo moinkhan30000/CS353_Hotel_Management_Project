@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './GuestDashboard.css';
+import './GuestReservationHistory.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { api, currentUser } from '../services/api';
@@ -19,6 +20,8 @@ interface Reservation {
   checkIn: string;
   checkOut: string;
 }
+
+const displayLabel = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
 
 const GuestReservationHistory = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -99,12 +102,12 @@ const GuestReservationHistory = () => {
 
           <div className="payment-history-container">
             <div className="payment-history-header">
-              Booking Id | Booking Date | Guest Count | Hotel Name | Status | Actions
+              Booking ID | Booking Date | Guest Count | Hotel Name | Status | Actions
             </div>
             {reservations.map((r, index) => (
               <div key={index} className="transaction-row">
                 <div style={{ flex: 1 }}>
-                  <div>{r.bookingId} | {r.bookingDate} | {r.guestCount} guest(s) | {r.hotelName} | {r.status}</div>
+                  <div>{r.bookingId} | {r.bookingDate} | {r.guestCount} {r.guestCount === 1 ? 'Guest' : 'Guests'} | {r.hotelName} | {displayLabel(r.status)}</div>
                   <div>Stay: {r.checkIn} → {r.checkOut}</div>
                   <div>Total Paid: {r.amountPaid} TL</div>
                   <div>Loyalty Points: {getPointsInfo(r)}</div>

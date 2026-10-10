@@ -54,7 +54,7 @@
 
 .filter-group input[type='radio'] {
   margin-right: 0.5rem;
-  accent-color: #000; /* Black check mark */
+  accent-color: var(--teal);
 }
 
 /* Property Listing Section */
@@ -109,9 +109,14 @@
   font-weight: 600;
 }
 
-.rating {
+.property-rating-price .rating {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
+  display: inline-flex;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--teal) !important;
+  color: #fff !important;
 }
 
 .price {

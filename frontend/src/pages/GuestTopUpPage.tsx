@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './GuestDashboard.css';
+import './GuestTopUpPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -98,8 +99,8 @@ const GuestTopUpPage = () => {
             <p><strong>Wallet:</strong> Guest wallet</p>
             <p><strong>Current Balance:</strong> {currentBalance.toFixed(2)}</p>
             <input
-              className="transaction-row"
-              placeholder="Amount Recharge"
+              className="topup-input"
+              placeholder="Top-Up Amount"
               value={amount}
               onChange={e => setAmount(e.target.value)}
               type="number"
@@ -107,38 +108,35 @@ const GuestTopUpPage = () => {
               step="0.01"
             />
             <input
-              className="transaction-row"
+              className="topup-input"
               placeholder="Credit/Debit Card Number"
               value={cardNumber}
               onChange={e => setCardNumber(e.target.value)}
               maxLength={16}
               inputMode="numeric"
             />
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <div className="card-details-row">
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="MM"
                 value={expMonth}
                 onChange={e => setExpMonth(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={2}
                 inputMode="numeric"
               />
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="YY"
                 value={expYear}
                 onChange={e => setExpYear(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={2}
                 inputMode="numeric"
               />
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="CVV"
                 value={cvv}
                 onChange={e => setCvv(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={4}
                 inputMode="numeric"
               />

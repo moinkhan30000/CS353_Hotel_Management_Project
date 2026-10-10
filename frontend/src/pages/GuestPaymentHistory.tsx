@@ -12,6 +12,8 @@ interface Transaction {
   transaction_type: string;
 }
 
+const displayLabel = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+
 const GuestPaymentHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const user = currentUser();
@@ -44,12 +46,12 @@ const GuestPaymentHistory = () => {
 
           <div className="payment-history-container">
             <div className="payment-history-header">
-              Transaction Id | Status | Amount | Type
+              Transaction ID | Status | Amount | Type
             </div>
 
             {transactions.map((txn, index) => (
               <div key={index} className="transaction-row">
-                {txn.id} | {txn.status} | {Number(txn.amount).toFixed(2)} | {txn.transaction_type.replace('_', ' ')}
+                {txn.id} | {displayLabel(txn.status)} | {Number(txn.amount).toFixed(2)} | {displayLabel(txn.transaction_type)}
               </div>
             ))}
 

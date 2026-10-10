@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import Footer from '../components/Footer/Footer';
 import { api } from '../services/api';
 import './GuestDashboard.css';
+import './GuestReviewPage.css';
 
 interface Booking { id: number; created_at: string; status: string; hotel: { name: string }; review?: Review }
 interface Review { id: number; booking: number; text: string; rating: number }
@@ -28,7 +29,7 @@ const GuestReviewPage = () => {
   return <div className="page-wrapper"><div className="dashboard-container"><main className="dashboard-main styled-background">
     <h2 className="dashboard-title">Hotel Reviews</h2><div className="payment-history-container">
       {bookings.map(booking => <div className="transaction-row" key={booking.id}><div style={{ flex: 1 }}>{booking.id} | {booking.created_at.slice(0, 10)} | {booking.hotel.name}{booking.review && <div><strong>Review:</strong> {booking.review.text}<br /><strong>Rating:</strong> {booking.review.rating}/10</div>}</div>
-        <button className="cancel-button" onClick={() => { setEditing(booking); setText(booking.review?.text ?? ''); setRating(booking.review?.rating ?? 1); }}>{booking.review ? 'Edit Review' : 'Add Review'}</button></div>)}
+        <button className="review-action-button" onClick={() => { setEditing(booking); setText(booking.review?.text ?? ''); setRating(booking.review?.rating ?? 1); }}>{booking.review ? 'Edit Review' : 'Add Review'}</button></div>)}
       {editing && <div className="transaction-row"><textarea value={text} onChange={event => setText(event.target.value)} /><input type="number" min="1" max="10" value={rating} onChange={event => setRating(Number(event.target.value))} /><button className="pay-button" onClick={save}>Save</button></div>}
       <div className="payment-history-actions"><button className="close-button" onClick={() => window.location.href='/guest-dashboard'}>Back</button></div>
     </div></main><Footer /></div></div>;
