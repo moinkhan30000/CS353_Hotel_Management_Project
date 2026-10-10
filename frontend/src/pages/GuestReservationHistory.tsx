@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './GuestDashboard.css';
+import './GuestReservationHistory.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { api, currentUser } from '../services/api';
 
-type Status = 'Upcoming' | 'Completed' | 'Cancelled' | 'Passed';
+type Status = 'pending' | 'confirmed' | 'cancelled';
 
 interface Reservation {
-  bookingId: string;
+  bookingId: number;
   bookingDate: string;
   guestCount: number;
   hotelName: string;
@@ -19,94 +21,64 @@ interface Reservation {
   checkOut: string;
 }
 
+const displayLabel = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+
 const GuestReservationHistory = () => {
-  const [reservations, setReservations] = useState<Reservation[]>([
-    {
-      bookingId: 'R12345',
-      bookingDate: '2025-05-01',
-      guestCount: 2,
-      hotelName: 'Oasis Hotel',
-      status: 'Completed',
-      amountPaid: 400,
-      amountDue: 0,
-      checkIn: '2025-05-10',
-      checkOut: '2025-05-15',
-    },
-    {
-      bookingId: 'R12346',
-      bookingDate: '2025-05-10',
-      guestCount: 1,
-      hotelName: 'Istanbul Hotel',
-      status: 'Upcoming',
-      amountPaid: 150,
-      amountDue: 150,
-      checkIn: '2025-06-20',
-      checkOut: '2025-06-23',
-    },
-    {
-      bookingId: 'R12347',
-      bookingDate: '2025-04-15',
-      guestCount: 3,
-      hotelName: 'Ankara Hotel',
-      status: 'Cancelled',
-      amountPaid: 200,
-      amountDue: 0,
-      checkIn: '2025-04-20',
-      checkOut: '2025-04-25',
-    },
-  ]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const user = currentUser();
+
+  useEffect(() => {
+    api<Array<{ id: number; created_at: string; guests: unknown[]; hotel: { name: string }; status: Status; amount_due: string; check_in: string; check_out: string }>>('/bookings/')
+      .then(items => setReservations(items.map(item => ({ bookingId: item.id, bookingDate: item.created_at.slice(0, 10), guestCount: item.guests.length, hotelName: item.hotel.name, status: item.status, amountPaid: item.status === 'confirmed' ? Number(item.amount_due) : 0, amountDue: item.status === 'pending' ? Number(item.amount_due) : 0, checkIn: item.check_in, checkOut: item.check_out }))));
+  }, []);
 
   const [enrolledInLoyalty] = useState<boolean>(true);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
+  const [pendingCancelId, setPendingCancelId] = useState<number | null>(null);
 
   const handleClear = () => {
-    const filtered = reservations.filter(r => r.status === 'Upcoming');
+    const filtered = reservations.filter(r => r.status !== 'cancelled');
     toast.success('Cleared past reservations!');
     setReservations(filtered);
   };
 
-  const handlePay = (bookingId: string) => {
-    toast.info(`Redirecting to payment for ${bookingId}`);
-    window.location.href = '/payment';
+  const handlePay = async (bookingId: number) => {
+    try {
+      await api(`/bookings/${bookingId}/pay/`, { method: 'POST' });
+      setReservations(items => items.map(item => item.bookingId === bookingId ? { ...item, status: 'confirmed', amountPaid: item.amountDue, amountDue: 0 } : item));
+      toast.success(`Booking ${bookingId} paid.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Payment failed.');
+    }
   };
 
-  const handleCancel = (bookingId: string) => {
+  const handleCancel = (bookingId: number) => {
     setPendingCancelId(bookingId);
     setShowConfirm(true);
   };
 
-  const confirmCancel = () => {
+  const confirmCancel = async () => {
     if (!pendingCancelId) return;
 
-    const updated: Reservation[] = reservations.map(r => {
-      if (r.bookingId === pendingCancelId && r.status === 'Upcoming') {
-        const today = new Date();
-        const checkIn = new Date(r.checkIn);
-        const daysBefore = (checkIn.getTime() - today.getTime()) / (1000 * 3600 * 24);
-
-        if (daysBefore >= 7) {
-          toast.warn(`Booking ${pendingCancelId} cancelled. 10% penalty applied.`);
-          return { ...r, status: 'Cancelled', amountPaid: r.amountPaid * 0.9 };
-        }
-
-        toast.error('Cannot cancel less than 7 days before check-in.');
-      }
-      return r;
-    });
-
-    setReservations(updated);
-    setShowConfirm(false);
-    setPendingCancelId(null);
+    try {
+      await api(`/bookings/${pendingCancelId}/cancel/`, { method: 'POST' });
+      setReservations(items => items.map(item => item.bookingId === pendingCancelId ? { ...item, status: 'cancelled' } : item));
+      toast.warn(`Booking ${pendingCancelId} cancelled.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Cancellation failed.');
+    } finally {
+      setShowConfirm(false);
+      setPendingCancelId(null);
+    }
   };
 
   const getPointsInfo = (reservation: Reservation): string => {
     if (!enrolledInLoyalty) return '--';
-    if (reservation.status === 'Cancelled' || reservation.status === 'Passed') return '0';
+    if (reservation.status === 'cancelled') return '0';
     const totalAmount = reservation.amountPaid + reservation.amountDue;
     const points = Math.floor(totalAmount / 10);
-    if (reservation.status === 'Completed') return `${points} earned`;
-    if (reservation.status === 'Upcoming') return `${points} if completed`;
+    if (reservation.status === 'confirmed') return `${points} earned`;
+    if (reservation.status === 'pending') return `${points} if completed`;
     return '0';
   };
 
@@ -120,7 +92,7 @@ const GuestReservationHistory = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>
@@ -130,17 +102,17 @@ const GuestReservationHistory = () => {
 
           <div className="payment-history-container">
             <div className="payment-history-header">
-              Booking Id | Booking Date | Guest Count | Hotel Name | Status | Actions
+              Booking ID | Booking Date | Guest Count | Hotel Name | Status | Actions
             </div>
             {reservations.map((r, index) => (
               <div key={index} className="transaction-row">
                 <div style={{ flex: 1 }}>
-                  <div>{r.bookingId} | {r.bookingDate} | {r.guestCount} guest(s) | {r.hotelName} | {r.status}</div>
+                  <div>{r.bookingId} | {r.bookingDate} | {r.guestCount} {r.guestCount === 1 ? 'Guest' : 'Guests'} | {r.hotelName} | {displayLabel(r.status)}</div>
                   <div>Stay: {r.checkIn} → {r.checkOut}</div>
                   <div>Total Paid: {r.amountPaid} TL</div>
                   <div>Loyalty Points: {getPointsInfo(r)}</div>
                 </div>
-                {r.status === 'Upcoming' && (
+                {r.status === 'pending' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <span>{r.amountPaid} TL paid | {r.amountDue} TL due</span>
                     <button className="pay-button" onClick={() => handlePay(r.bookingId)}>Pay</button>

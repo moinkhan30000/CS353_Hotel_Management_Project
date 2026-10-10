@@ -1,23 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './GuestDashboard.css';
-import './GuestPaymentHistory.css'; // optional if you extract CSS
+import './GuestPaymentHistory.css';
+import { api, currentUser } from '../services/api';
 
 interface Transaction {
-  id: string;
-  status: 'Completed' | 'Pending' | 'Failed';
-  amount: number;
-  type: 'Reservation' | 'Top-up' | 'Penalty';
+  id: number;
+  status: string;
+  amount: string;
+  transaction_type: string;
 }
 
+const displayLabel = (value: string) => value.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
+
 const GuestPaymentHistory = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: 'TXN12345', status: 'Completed', amount: 150, type: 'Reservation' },
-    { id: 'TXN12346', status: 'Completed', amount: 300, type: 'Top-up' },
-    { id: 'TXN12347', status: 'Failed', amount: 200, type: 'Reservation' },
-    { id: 'TXN12348', status: 'Completed', amount: 20, type: 'Penalty' },
-  ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const user = currentUser();
+
+  useEffect(() => {
+    api<{ transactions: Transaction[] }>('/wallet/').then(value => setTransactions(value.transactions));
+  }, []);
 
   const clearHistory = () => {
     setTransactions([]);
@@ -33,7 +36,7 @@ const GuestPaymentHistory = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>
@@ -43,12 +46,12 @@ const GuestPaymentHistory = () => {
 
           <div className="payment-history-container">
             <div className="payment-history-header">
-              Transaction Id | Status | Amount | Type
+              Transaction ID | Status | Amount | Type
             </div>
 
             {transactions.map((txn, index) => (
               <div key={index} className="transaction-row">
-                {txn.id} | {txn.status} | {txn.amount} TL | {txn.type}
+                {txn.id} | {displayLabel(txn.status)} | {Number(txn.amount).toFixed(2)} | {displayLabel(txn.transaction_type)}
               </div>
             ))}
 

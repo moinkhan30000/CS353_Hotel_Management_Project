@@ -1,36 +1,8 @@
-.choice-container {
-  min-height: calc(100vh - 120px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: url('/src/assets/sanctuary.jpg') no-repeat center center fixed;
-  background-size: cover;
-}
-
-.choice-buttons button {
-  margin: 1rem;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border: none;
-  border-radius: 1.5rem;
-  background-color: black;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-}
-.choice-container h2 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
-  margin-bottom: 1.5rem;
-}
-
-
-.choice-buttons button:hover {
-  transform: scale(1.05);
-}
+.unified-register-page { min-height:calc(100vh - 72px);display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,.95fr);background:#fffdf8; }
+.register-showcase { display:flex;align-items:flex-end;padding:clamp(2.5rem,6vw,6rem);background:linear-gradient(180deg,rgba(8,31,38,.08),rgba(8,31,38,.87)),url('../assets/sanctuary.jpg') center/cover no-repeat;color:#fff; }
+.register-showcase>div { max-width:650px; }.register-showcase h1{margin:0 0 1rem;font-size:clamp(2.5rem,4.5vw,4.7rem);line-height:1.04;letter-spacing:-.055em}.register-showcase p{max-width:540px;color:rgba(255,255,255,.84);font-size:1.05rem}
+.register-panel{display:flex;align-items:center;justify-content:center;padding:clamp(2rem,5vw,4.5rem)}.register-form-wrap{width:min(100%,570px)}.register-form-wrap h2{margin:0;font-size:clamp(2rem,4vw,3rem)}.register-intro{margin:.6rem 0 1.4rem;color:var(--muted)}
+.register-role-selector{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.35rem;margin-bottom:1.5rem;border:1px solid var(--line);border-radius:14px;background:#edf2f1}.register-role-selector button{min-height:44px;background:transparent;color:var(--muted);border-radius:10px}.register-role-selector button.active{background:#fff!important;color:var(--navy)!important;box-shadow:0 3px 12px rgba(20,54,61,.1)}
+.unified-register-form{display:flex;flex-direction:column;gap:1rem}.unified-register-form label{display:flex;flex-direction:column;gap:.4rem;color:var(--navy);font-size:.9rem;font-weight:700}.unified-register-form input{width:100%;min-height:48px}.register-name-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.register-submit{min-height:54px;border-radius:11px!important}.register-error{margin:0;padding:.75rem .9rem;border-radius:9px;background:#fff0ed;color:#a23d2c}.register-signin{text-align:center;color:var(--muted)}.register-signin a{color:var(--teal-dark);font-weight:700}
+@media(max-width:980px){.unified-register-page{grid-template-columns:1fr}.register-showcase{min-height:330px;padding:3rem 1.5rem}.register-panel{padding:3rem 1.5rem}}
+@media(max-width:560px){.register-name-row{grid-template-columns:1fr}.register-showcase h1{font-size:2.5rem}}

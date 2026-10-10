@@ -1,23 +1,7 @@
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #0077b6;
-  color: white;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-nav a {
-  margin: 0 0.75rem;
-  color: white;
-  text-decoration: none;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
+.nav { min-height:72px; display:flex; align-items:center; justify-content:space-between; padding:.8rem clamp(1rem,5vw,4.5rem); background:rgba(18,49,60,.97); color:#fff; position:relative; z-index:30; }
+.nav .logo { font-size:1.25rem; font-weight:800; letter-spacing:.08em; padding:0; height:auto; }
+.nav nav { display:flex; align-items:center; gap:.25rem; }
+.nav nav a { color:rgba(255,255,255,.82); padding:.55rem .8rem; border-radius:999px; font-weight:600; font-size:.94rem; }
+.nav nav a:hover,.nav nav a.active { color:#fff; background:rgba(255,255,255,.1); }
+.nav nav .nav-cta { background:#fff; color:var(--navy); margin-left:.25rem; }
+@media(max-width:650px){.nav{align-items:flex-start;gap:.75rem;flex-direction:column}.nav nav{width:100%;overflow-x:auto}.nav nav a{white-space:nowrap}}

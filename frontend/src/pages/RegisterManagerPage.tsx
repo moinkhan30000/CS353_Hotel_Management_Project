@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './RegisterManagerPage.css';
+import { api } from '../services/api';
 
 const RegisterManagerPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const RegisterManagerPage = () => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
   const nameRegex = /^[\p{L}]+$/u;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
@@ -49,10 +50,17 @@ const RegisterManagerPage = () => {
       return;
     }
 
-    // ✅ Valid - show toast and redirect
-    setError('');
-    toast.success('Manager registered successfully!');
-    setTimeout(() => navigate('/login'), 2000);
+    try {
+      await api('/auth/register/', {
+        method: 'POST',
+        body: JSON.stringify({ first_name: firstName, last_name: lastName, email, phone_number: phone, password, role: 'manager' }),
+      });
+      setError('');
+      toast.success('Manager registered successfully!');
+      setTimeout(() => navigate('/login/manager'), 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed.');
+    }
   };
 
   return (

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PrivateHeader from '../components/PrivateHeader/PrivateHeader';
 import Footer from '../components/Footer/Footer';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './BookingGuestDetailsPage.css';
+import { api, currentUser, logout } from '../services/api';
 
 interface GuestFormData {
   username: string;
@@ -21,6 +22,9 @@ const BookingGuestDetailsPage = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const guestCount = Math.max(parseInt(query.get('guests') || '1', 10), 1);
+  const roomId = Number(query.get('room'));
+  const checkIn = query.get('checkIn') || '';
+  const checkOut = query.get('checkOut') || '';
 
   const createInitialData = () =>
     Array.from({ length: guestCount }, () => ({
@@ -36,6 +40,18 @@ const BookingGuestDetailsPage = () => {
   const [formData, setFormData] = useState<GuestFormData[]>(createInitialData());
   const [disabled, setDisabled] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [amountDue, setAmountDue] = useState(0);
+  const [transactionId, setTransactionId] = useState('');
+  const [paymentError, setPaymentError] = useState('');
+
+  useEffect(() => {
+    api<{ balance: string }>('/wallet/').then(value => setBalance(Number(value.balance))).catch(() => setPaymentError('Please log in as a guest to complete this booking.'));
+    api<{ price: string }>(`/rooms/${roomId}/`).then(room => {
+      const nights = Math.max(1, (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000);
+      setAmountDue(Number(room.price) * nights);
+    }).catch(() => setPaymentError('This room is no longer available.'));
+  }, [checkIn, checkOut, roomId]);
 
   const handleChange = (index: number, field: GuestField, value: string | boolean) => {
     const updated = [...formData];
@@ -70,27 +86,39 @@ const BookingGuestDetailsPage = () => {
 
   const handleTopUp = () => navigate('/guest-topup');
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     if (!isFormValid()) {
       alert('Please fill all fields correctly.');
       return;
     }
-    setDisabled(true);
-    setFormData(createInitialData());
-    setShowReceipt(true);
+    try {
+      const booking = await api<{ id: number; amount_due: string }>('/bookings/', {
+        method: 'POST',
+        body: JSON.stringify({ room: roomId, check_in: checkIn, check_out: checkOut, guests: formData.map(guest => ({ name: guest.username, age: Math.max(1, new Date().getFullYear() - new Date(guest.dob).getFullYear()) })) }),
+      });
+      await api(`/bookings/${booking.id}/pay/`, { method: 'POST' });
+      setTransactionId(String(booking.id));
+      setBalance(value => value - Number(booking.amount_due));
+      setDisabled(true);
+      setShowReceipt(true);
+      setPaymentError('');
+    } catch (err) {
+      setPaymentError(err instanceof Error ? err.message : 'Unable to complete the booking.');
+    }
   };
 
   const handleReceiptClose = () => navigate('/guest-dashboard');
 
-  const mockUsername = 'GuestUser';
+  const user = currentUser();
+  const username = user ? `${user.first_name} ${user.last_name}`.trim() || user.email : 'Guest';
   const handleLogout = () => {
-    console.log('Logged out');
+    logout();
     navigate('/login');
   };
 
   return (
     <div className="guest-details-page">
-      <PrivateHeader username={mockUsername} onLogout={handleLogout} />
+      <PrivateHeader username={username} onLogout={handleLogout} />
       <div className="guest-form-wrapper">
         {formData.map((guest, i) => (
           <div className="guest-card" key={i}>
@@ -117,14 +145,15 @@ const BookingGuestDetailsPage = () => {
 
         <div className="wallet-summary">
           <div className="wallet-card">
-            <p><strong>Wallet ID:</strong> 39495347</p>
-            <p><strong>Balance:</strong> 2763.25 TL</p>
+            <p><strong>Wallet:</strong> Guest wallet</p>
+            <p><strong>Balance:</strong> {balance.toFixed(2)}</p>
             <button onClick={handleTopUp}>TOP-UP</button>
           </div>
           <div className="payment-box">
             <p><strong>Payment</strong></p>
-            <p className="amount">10,000 TL</p>
+            <p className="amount">{amountDue.toFixed(2)}</p>
             <button className="reserve-btn" onClick={handleReserve}>Confirm & Pay</button>
+            {paymentError && <p className="error-message">{paymentError}</p>}
           </div>
         </div>
       </div>
@@ -135,13 +164,13 @@ const BookingGuestDetailsPage = () => {
             <h3>Transaction Details</h3>
             <p className="check-icon">✔️</p>
             <h4>Payment Successful</h4>
-            <p>Thank you for confirming your reservation at Oasis Hotel from 12-09-25 till 20-09-25. We hope your stay goes smoothly, thank you for choosing HorizonStay</p>
-            <p><strong>Transaction ID:</strong> 9328448AFK</p>
+            <p>Thank you for confirming your reservation from {checkIn} until {checkOut}. We hope your stay goes smoothly.</p>
+            <p><strong>Transaction ID:</strong> {transactionId}</p>
             <p><strong>Status:</strong> Successful</p>
-            <p><strong>Transaction Amount:</strong> 10,000 TL</p>
+            <p><strong>Transaction Amount:</strong> {amountDue.toFixed(2)}</p>
             <p><strong>Method of Payment:</strong> Wallet</p>
             <p><strong>Transaction Type:</strong> Reservation</p>
-            <p><strong>Points Earned:</strong> 3000 Points</p>
+            <p><strong>Points Earned:</strong> {Math.floor(amountDue / 10)} Points</p>
             <button onClick={handleReceiptClose}>OK</button>
           </div>
         </div>

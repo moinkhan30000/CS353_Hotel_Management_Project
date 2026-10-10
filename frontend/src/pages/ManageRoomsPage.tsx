@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './ManageRoomsPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { api, currentUser } from '../services/api';
 
 interface Room {
+  id?: number;
   type: string;
   count: number;
   capacity: number;
@@ -17,13 +19,22 @@ interface Room {
 const ManageRoomsPage = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [rooms, setRooms] = useState<Room[]>([
-    { type: 'Single', count: 10, capacity: 1, price: 100, editing: false },
-    { type: 'Double', count: 5, capacity: 2, price: 180, editing: false },
-  ]);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const user = currentUser();
 
-  const toggleEdit = (index: number) => {
+  useEffect(() => {
+    api<Array<{ id: number; room_type: string; quantity: number; capacity: number; price: string }>>('/rooms/')
+      .then(items => setRooms(items.map(item => ({ id: item.id, type: item.room_type, count: item.quantity, capacity: item.capacity, price: Number(item.price), editing: false }))));
+  }, []);
+
+  const toggleEdit = async (index: number) => {
     const updated = [...rooms];
+    if (updated[index].editing && validateRoom(updated[index])) {
+      const room = updated[index];
+      const saved = await api<{ id: number }>(room.id ? `/rooms/${room.id}/` : '/rooms/', { method: room.id ? 'PATCH' : 'POST', body: JSON.stringify({ name: room.type, room_type: room.type, quantity: room.count, capacity: room.capacity, price: room.price }) });
+      room.id = saved.id;
+      toast.success('Room saved.');
+    }
     updated[index].editing = !updated[index].editing;
     setRooms(updated);
   };
@@ -54,7 +65,8 @@ const ManageRoomsPage = () => {
     ]);
   };
 
-  const removeRoom = (index: number) => {
+  const removeRoom = async (index: number) => {
+    if (rooms[index].id) await api(`/rooms/${rooms[index].id}/`, { method: 'DELETE' });
     setRooms(rooms.filter((_, i) => i !== index));
   };
 
@@ -93,7 +105,7 @@ const ManageRoomsPage = () => {
           <nav className="dashboard-nav">
             <a href="/managerhoteldashboard" className="nav-link">Dashboard</a>
             <div className="user-info" onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Manager'}</span>
               {dropdownOpen && (
                 <div className="dropdown-content">
                   <a href="/">Logout</a>

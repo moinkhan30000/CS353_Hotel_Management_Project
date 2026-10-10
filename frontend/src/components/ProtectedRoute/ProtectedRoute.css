@@ -1,0 +1,22 @@
+.protected-page {
+  min-height: 100vh;
+  background: #f7faf9;
+}
+
+.protected-content {
+  min-height: calc(100vh - 72px);
+}
+
+.protected-content header,
+.protected-content .nav.private-nav {
+  display: none !important;
+}
+
+.protected-content .dashboard-container,
+.protected-content .page-wrapper,
+.protected-content .container,
+.protected-content .dashboard,
+.protected-content .page-container,
+.protected-content .profile-page {
+  min-height: 0;
+}

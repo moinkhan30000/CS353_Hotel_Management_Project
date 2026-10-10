@@ -1,34 +1,52 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import PrivateHeader from '../components/PrivateHeader/PrivateHeader';
 import Footer from '../components/Footer/Footer';
 import './PropertyListingPage.css';
+import oasisImage from '../assets/oasis.jpg';
+import { api, currentUser, logout } from '../services/api';
 
-const propertiesData = [
-  {
-    id: 1,
-    name: 'The Oasis',
-    location: 'Rio de Janeiro, Brazil',
-    rating: 9.0,
-    price: 10000,
-    imageUrl: '/src/assets/oasis.jpg',
-  },
-  // Add more properties as needed
-];
+interface Property {
+  id: number;
+  name: string;
+  city: string;
+  country: string;
+  rating: number;
+  images: { url: string }[];
+  rooms: { price: string }[];
+}
 
 const PropertyListingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchParams] = useSearchParams();
+  const user = currentUser();
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loadError, setLoadError] = useState('');
 
-  const [location, setLocation] = useState('Rio de Janeiro');
-  const [checkIn, setCheckIn] = useState('2025-06-20');
-  const [checkOut, setCheckOut] = useState('2025-06-25');
-  const [guests, setGuests] = useState('2');
+  const [location, setLocation] = useState(searchParams.get('search') ?? '');
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const dayAfter = new Date(Date.now() + 172800000).toISOString().slice(0, 10);
+  const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || tomorrow);
+  const [checkOut, setCheckOut] = useState(searchParams.get('checkOut') || dayAfter);
+  const [guests, setGuests] = useState(searchParams.get('guests') || '1');
 
-  const [budgetFilter, setBudgetFilter] = useState<number | null>(2000);
-  const [ratingFilter, setRatingFilter] = useState<number | null>(9);
+  const [budgetFilter, setBudgetFilter] = useState<number | null>(null);
+  const [ratingFilter, setRatingFilter] = useState<number | null>(null);
 
-  const filteredProperties = propertiesData.filter(property => {
+  useEffect(() => {
+    api<Property[]>(`/hotels/${location ? `?search=${encodeURIComponent(location)}` : ''}`)
+      .then(setProperties)
+      .catch(err => setLoadError(err instanceof Error ? err.message : 'Unable to load properties.'));
+  }, [location]);
+
+  const propertyCards = properties.map(property => ({
+    ...property,
+    location: `${property.city}, ${property.country}`,
+    price: property.rooms.length ? Math.min(...property.rooms.map(room => Number(room.price))) : 0,
+    imageUrl: property.images[0]?.url || oasisImage,
+  }));
+
+  const filteredProperties = propertyCards.filter(property => {
     let budgetMatch = true;
     if (budgetFilter === 2000) {
       budgetMatch = property.price >= 2000 && property.price <= 10000;
@@ -54,16 +72,21 @@ const PropertyListingPage = () => {
     return budgetMatch && ratingMatch && locationMatch;
   });
 
-  const handleSearch = () => {
-    console.log({ location, checkIn, checkOut, guests });
+  const handleSearch = async () => {
+    try {
+      setProperties(await api<Property[]>(`/hotels/${location ? `?search=${encodeURIComponent(location)}` : ''}`));
+      setLoadError('');
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Unable to search properties.');
+    }
   };
 
   return (
     <>
-      {isLoggedIn ? (
+      {user ? (
         <PrivateHeader
-          username="Moin Khan"
-          onLogout={() => setIsLoggedIn(false)}
+          username={`${user.first_name} ${user.last_name}`.trim() || user.email}
+          onLogout={() => { logout(); window.location.href = '/'; }}
         />
       ) : (
         <Header />
@@ -192,8 +215,10 @@ const PropertyListingPage = () => {
           </aside>
 
           <section className="property-list">
+            {loadError && <p>{loadError}</p>}
+            {!loadError && filteredProperties.length === 0 && <p>No properties match your search.</p>}
             {filteredProperties.map(property => (
-              <Link to={`/properties/${property.id}`} className="property-card" key={property.id}>
+              <Link to={`/properties/${property.id}?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`} className="property-card" key={property.id}>
                 <img
                   src={property.imageUrl}
                   alt={property.name}

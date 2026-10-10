@@ -3,6 +3,7 @@ import { Link , useNavigate} from 'react-router-dom';
 import './LoginGuestPage.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import { login } from '../services/api';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -18,12 +19,12 @@ const LoginPage = () => {
       return;
     }
 
-    if (email === 'admin@e' && password === '123') {
-      alert('Login successful!');
+    try {
+      await login(email, password, 'admin');
       setError('');
-      navigate("/admindashboard")
-    } else {
-      setError('Invalid email or password.');
+      navigate('/admindashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to log in.');
     }
   };
 

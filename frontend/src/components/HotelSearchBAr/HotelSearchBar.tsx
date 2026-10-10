@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './HotelSearchBar.css'; // You can copy the styles from HeroSection.css and modify
+import './HotelSearchBar.css';
 
 interface HotelSearchBarProps {
   initialLocation?: string;

@@ -1,15 +1,1 @@
-.top-hotels {
-  padding: 2rem;
-}
-
-.hotel-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-
-.see-all {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-}
+.top-hotels { max-width:1240px; margin:0 auto; padding:clamp(4rem,7vw,7rem) clamp(1rem,4vw,2rem); }.section-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:2rem}.section-heading h2{font-size:clamp(2rem,4vw,3rem);margin:0}.hotel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem}.see-all{color:var(--teal-dark);font-weight:800;padding:.6rem 0}.see-all:hover{color:var(--coral)}

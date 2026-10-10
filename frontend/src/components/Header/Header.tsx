@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import PrivateHeader from '../PrivateHeader/PrivateHeader';
+import { currentUser, logout } from '../../services/api';
 import './Header.css';
 
 interface HeaderProps {
@@ -7,14 +9,22 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ hideLogin = false, hideRegister = false }) => {
+  const user = currentUser();
+
+  if (user) {
+    const username = `${user.first_name} ${user.last_name}`.trim() || user.email;
+    return <PrivateHeader username={username} onLogout={() => { logout(); window.location.href = '/'; }} />;
+  }
+
   return (
     <header className="nav">
-      <div className="logo">HORIZONSTAY</div>
+      <Link to="/" className="logo">HORIZONSTAY</Link>
       <nav>
-        <Link to="/">Home</Link>
-        {!hideLogin && <Link to="/login">Login</Link>}
-        {!hideRegister && <Link to="/register">Register</Link>}
-        <Link to="/contact">Contact</Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/properties">Stays</NavLink>
+        <NavLink to="/contact">Contact</NavLink>
+        {!hideLogin && <NavLink to="/login">Login</NavLink>}
+        {!hideRegister && <Link className="nav-cta" to="/register">Register</Link>}
       </nav>
     </header>
   );

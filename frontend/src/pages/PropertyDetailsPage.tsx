@@ -1,123 +1,94 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import oasisImage from '../assets/oasis.jpg';
+import { api } from '../services/api';
 import './PropertyDetailsPage.css';
 
-const sampleRoom = {
-  name: 'The Oasis',
-  location: 'Rio de Janeiro, Brazil',
-  rating: 9.0,
-  description: `Atlantica Golden Beach Hotel - Adults Only has a restaurant, bar, a shared lounge and garden in Paphos City. With free WiFi, this 4-star hotel offers a private beach area and a concierge service. The hotel features an outdoor swimming pool, fitness center, evening entertainment and a 24-hour front desk...`,
-  features: [
-    '2 swimming pools',
-    'Free parking',
-    'Free Wifi',
-    'Non-smoking rooms',
-    'Spa',
-    'Fitness center',
-    'Tea/Coffee Maker in All Rooms',
-    'Bar',
-    'Private beach area',
-    'Very Good Breakfast',
-  ],
-  highlights: {
-    breakfast: 'Very good Breakfast',
-    swimmingPool: 'Private, Shallow end, Indoor swimming pool, Outdoor swimming pool',
-    parking: 'Free parking, On-site parking, Accessible',
-  },
-  room: {
-    type: 'Twin Room',
-    beds: '2 Twin beds',
-    guests: 2,
-    price: 10000,
-    highlights: [
-      'Very good breakfast included',
-      'Flexible to reschedule if plans change',
-      'Non-refundable',
-      'Pay online'
-    ],
-    features: ['Wifi', 'Mini Bar', 'Extra Toiletries', 'Coffee/Tea Maker', 'Streaming Services']
-  }
-};
+interface HotelDetails {
+  id: number;
+  name: string;
+  city: string;
+  country: string;
+  description: string;
+  rating: number;
+  amenities: { name: string }[];
+  images: { url: string }[];
+  rooms: { id: number; name: string; room_type: string; capacity: number; quantity: number; price: string; amenities: { name: string }[] }[];
+}
 
 const PropertyDetailsPage = () => {
   const [roomCount, setRoomCount] = useState(1);
-  const navigate = useNavigate(); // ✅ Moved here inside the component
+  const [hotel, setHotel] = useState<HotelDetails | null>(null);
+  const [error, setError] = useState('');
+  const { propertyId } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    api<HotelDetails>(`/hotels/${propertyId}/`)
+      .then(setHotel)
+      .catch(err => setError(err instanceof Error ? err.message : 'Unable to load property.'));
+  }, [propertyId]);
+
+  if (error) return <><Header /><main className="content"><p>{error}</p></main><Footer /></>;
+  if (!hotel) return <><Header /><main className="content"><p>Loading property...</p></main><Footer /></>;
+
+  const room = hotel.rooms[0];
+  const image = hotel.images[0]?.url || oasisImage;
+  const bookingQuery = new URLSearchParams({
+    room: String(room?.id ?? ''),
+    guests: String(roomCount),
+    checkIn: searchParams.get('checkIn') ?? '',
+    checkOut: searchParams.get('checkOut') ?? '',
+  });
 
   return (
     <div className="property-details">
       <Header />
       <div className="hero-section">
         <div className="title-area">
-          <div>
-            <h2>{sampleRoom.name}</h2>
-            <span>{sampleRoom.location}</span>
-          </div>
+          <div><h2>{hotel.name}</h2><span>{hotel.city}, {hotel.country}</span></div>
           <div className="rating-review">
-            <div className="rating-badge styled-rating">{sampleRoom.rating}/10</div>
-            <button className="review-btn" onClick={() => navigate('/reviews_view')}>View Reviews</button>
+            <div className="rating-badge styled-rating">{hotel.rating.toFixed(1)}/10</div>
+            <button className="review-btn" onClick={() => navigate(`/reviews_view?hotel=${hotel.id}`)}>View Reviews</button>
           </div>
         </div>
         <div className="gallery">
-          <img src="https://source.unsplash.com/600x400/?hotel,resort" alt="Main view" className="main-img" />
+          <img src={image} alt={hotel.name} className="main-img" />
           <div className="thumbnail-row">
-            {[...Array(6)].map((_, i) => (
-              <img key={i} src={`https://source.unsplash.com/100x100/?room,view&sig=${i}`} alt={`thumb-${i}`} />
-            ))}
+            {(hotel.images.length ? hotel.images : [{ url: image }]).map((item, index) => <img key={index} src={item.url} alt={`${hotel.name} view ${index + 1}`} />)}
           </div>
         </div>
       </div>
 
       <div className="content">
         <div className="left-column">
-          <p className="description">{sampleRoom.description}</p>
-          <ul className="features-list">
-            {sampleRoom.features.map((feature, i) => (
-              <li key={i}>{feature}</li>
-            ))}
-          </ul>
-
+          <p className="description">{hotel.description}</p>
+          <ul className="features-list">{hotel.amenities.map(item => <li key={item.name}>{item.name}</li>)}</ul>
           <div className="room-box">
-            <h3>{sampleRoom.room.type}</h3>
-            <p>{sampleRoom.room.beds}</p>
-            <p>Guests: {sampleRoom.room.guests}</p>
-            <p className="price">${sampleRoom.room.price.toLocaleString()}</p>
-            <ul className="room-highlights">
-              {sampleRoom.room.highlights.map((h, i) => (
-                <li key={i}>{h}</li>
-              ))}
-            </ul>
+            <h3>{room?.room_type || 'No rooms available'}</h3>
+            <p>{room?.name}</p>
+            <p>Guests: {room?.capacity ?? 0}</p>
+            <p className="price">${Number(room?.price ?? 0).toLocaleString()}</p>
+            <ul className="room-highlights"><li>Flexible booking dates</li><li>Secure wallet payment</li></ul>
             <div className="checkbox-features">
-              {sampleRoom.room.features.map((feature, i) => (
-                <label key={i}>
-                  <input type="checkbox" /> {feature}
-                </label>
-              ))}
+              {(room?.amenities ?? []).map(item => <label key={item.name}><input type="checkbox" checked readOnly /> {item.name}</label>)}
             </div>
             <div className="room-select">
               <label>Select Rooms: </label>
-              <select value={roomCount} onChange={(e) => setRoomCount(+e.target.value)}>
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
+              <select value={roomCount} onChange={event => setRoomCount(Number(event.target.value))}>
+                {Array.from({ length: Math.min(room?.quantity ?? 1, 5) }, (_, index) => index + 1).map(number => <option key={number} value={number}>{number}</option>)}
               </select>
             </div>
-<button
-  className="reserve-btn"
-  onClick={() => navigate('/booking')}
->
-  Reserve
-</button>
+            <button className="reserve-btn" disabled={!room} onClick={() => navigate(`/booking?${bookingQuery}`)}>Reserve</button>
           </div>
         </div>
-
         <div className="right-column">
           <div className="highlight-box">
             <h4>Property Highlights</h4>
-            <p><strong>Breakfast Available:</strong> {sampleRoom.highlights.breakfast}</p>
-            <p><strong>Swimming Pool:</strong> {sampleRoom.highlights.swimmingPool}</p>
-            <p><strong>Parking:</strong> {sampleRoom.highlights.parking}</p>
+            {hotel.amenities.map(item => <p key={item.name}><strong>{item.name}</strong></p>)}
           </div>
         </div>
       </div>

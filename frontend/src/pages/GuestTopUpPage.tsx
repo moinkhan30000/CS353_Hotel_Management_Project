@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
 import './GuestDashboard.css';
+import './GuestTopUpPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { api, currentUser } from '../services/api';
 
 const GuestTopUpPage = () => {
   const [amount, setAmount] = useState('');
@@ -14,8 +16,13 @@ const GuestTopUpPage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const walletId = '39495347';
-  const currentBalance = 2763.25;
+  const [currentBalance, setCurrentBalance] = useState(0);
+  const [transactionId, setTransactionId] = useState('');
+  const user = currentUser();
+
+  useEffect(() => {
+    api<{ balance: string }>('/wallet/').then(value => setCurrentBalance(Number(value.balance))).catch(err => toast.error(err instanceof Error ? err.message : 'Unable to load wallet.'));
+  }, []);
 
   const isValidCardDetails = () => {
     const cardRegex = /^\d{16}$/;
@@ -49,9 +56,16 @@ const GuestTopUpPage = () => {
     return true;
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!isValidCardDetails()) return;
-    setShowPopup(true);
+    try {
+      const wallet = await api<{ balance: string; transactions: { id: number }[] }>('/wallet/top-up/', { method: 'POST', body: JSON.stringify({ amount: Number(amount) }) });
+      setCurrentBalance(Number(wallet.balance));
+      setTransactionId(String(wallet.transactions[wallet.transactions.length - 1]?.id ?? ''));
+      setShowPopup(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Top-up failed.');
+    }
   };
 
   const handleClose = () => {
@@ -74,7 +88,7 @@ const GuestTopUpPage = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>
@@ -82,11 +96,11 @@ const GuestTopUpPage = () => {
         <main className="dashboard-main styled-background">
           <h2 className="dashboard-title">Top-Up</h2>
           <div className="payment-history-container">
-            <p><strong>Wallet ID:</strong> {walletId}</p>
+            <p><strong>Wallet:</strong> Guest wallet</p>
             <p><strong>Current Balance:</strong> {currentBalance.toFixed(2)}</p>
             <input
-              className="transaction-row"
-              placeholder="Amount Recharge"
+              className="topup-input"
+              placeholder="Top-Up Amount"
               value={amount}
               onChange={e => setAmount(e.target.value)}
               type="number"
@@ -94,38 +108,35 @@ const GuestTopUpPage = () => {
               step="0.01"
             />
             <input
-              className="transaction-row"
+              className="topup-input"
               placeholder="Credit/Debit Card Number"
               value={cardNumber}
               onChange={e => setCardNumber(e.target.value)}
               maxLength={16}
               inputMode="numeric"
             />
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <div className="card-details-row">
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="MM"
                 value={expMonth}
                 onChange={e => setExpMonth(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={2}
                 inputMode="numeric"
               />
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="YY"
                 value={expYear}
                 onChange={e => setExpYear(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={2}
                 inputMode="numeric"
               />
               <input
-                className="transaction-row"
+                className="topup-input"
                 placeholder="CVV"
                 value={cvv}
                 onChange={e => setCvv(e.target.value)}
-                style={{ flex: 1 }}
                 maxLength={4}
                 inputMode="numeric"
               />
@@ -142,7 +153,7 @@ const GuestTopUpPage = () => {
                 <hr />
                 <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                   <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Top-Up Successful</p>
-                  <p><strong>Transaction ID:</strong> 9328448AFK</p>
+                  <p><strong>Transaction ID:</strong> {transactionId}</p>
                   <p><strong>Status:</strong> Successful</p>
                   <p><strong>Transaction Amount:</strong> {parseFloat(amount).toFixed(2).toLocaleString()} TL</p>
                   <p><strong>Method of Payment:</strong> Credit Card</p>

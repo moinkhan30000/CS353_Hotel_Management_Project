@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './RegisterGuestPage.css';
+import { api } from '../services/api';
 
 const RegisterGuestPage = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const RegisterGuestPage = () => {
     return age > 16 || (age === 16 && hasBirthdayPassed);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || !identity_number || !date_of_bith) {
@@ -70,9 +71,17 @@ const RegisterGuestPage = () => {
 
     
 
-    setError('');
-    toast.success('Guest registered successfully!');
-    setTimeout(() => navigate('/login'), 2000);
+    try {
+      await api('/auth/register/', {
+        method: 'POST',
+        body: JSON.stringify({ first_name: firstName, last_name: lastName, email, phone_number: phone, password, role: 'guest', identity_number, date_of_birth: date_of_bith }),
+      });
+      setError('');
+      toast.success('Guest registered successfully!');
+      setTimeout(() => navigate('/login/guest'), 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed.');
+    }
   };
 
   return (
