@@ -1,8 +1,8 @@
 # HorizonStay Hotel Management System
 
-HorizonStay is a full-stack hotel discovery, booking, and management application. It provides dedicated workflows for guests, hotel managers, and platform administrators through a responsive React interface backed by a Django REST API and MySQL.
+HorizonStay is a full-stack hotel booking and management application built with React, Django REST Framework, and MySQL. Guests can find and book hotels, while managers and administrators have their own tools for running the platform.
 
-The project includes repeatable demo data, backend-enforced role and ownership controls, Docker-based setup, API persistence and security tests, and Selenium browser tests with desktop and mobile screenshots.
+It can be run locally with Docker and includes demo data, role-based access control, backend tests, and Selenium tests for desktop and mobile layouts.
 
 ## Features
 
@@ -14,7 +14,7 @@ The project includes repeatable demo data, backend-enforced role and ownership c
 - Pay for bookings through a wallet balance.
 - Top up the wallet and review payment history.
 - Earn and redeem loyalty points.
-- Add or edit reviews for completed bookings.
+- Add or edit reviews for confirmed bookings.
 - View and update profile information.
 
 ### Hotel managers
@@ -29,7 +29,7 @@ The project includes repeatable demo data, backend-enforced role and ownership c
 
 ### Administrators
 
-- View platform-level dashboard information.
+- View an overview of platform activity.
 - Maintain administrator profile details.
 - Generate and review reports covering users, hotels, bookings, and revenue.
 
@@ -95,7 +95,7 @@ Docker Compose starts the following services:
 | Django admin | <http://localhost:8000/admin/> | Django administration interface |
 | Database | Internal port `3306` | MySQL storage used by the backend |
 
-Migrations and the repeatable demo-data command run automatically when the backend container starts.
+Migrations and the demo-data seed command run automatically when the backend container starts.
 
 Stop the stack with:
 
@@ -213,13 +213,13 @@ All application endpoints are under `/api/v1/`.
 | Newsletter | `/newsletter/subscribe/` |
 | Health check | `/health/` |
 
-Permissions are enforced by role on the backend; hiding a frontend control is not treated as authorization.
+The API checks permissions independently of the frontend, so hiding a button or page is never used as a security control.
 
 ## Testing and validation
 
-### Backend persistence tests
+### Backend tests
 
-The backend suite uses a disposable in-memory database and verifies both persistence and security boundaries. Its 19 tests cover registration, profiles, bookings, payments, cancellations, wallet transactions, loyalty points, hotels, amenities, room CRUD, reviews, reports, newsletter subscriptions, forbidden cross-role writes, ownership isolation, duplicate-payment prevention, password validation, upload rejection, and refresh-token revocation.
+The backend suite runs against a temporary in-memory database, so it does not touch development data. Its 19 tests cover the main API workflows as well as role restrictions, resource ownership, duplicate-payment prevention, password validation, image uploads, and refresh-token revocation.
 
 With the Docker stack running:
 
@@ -258,7 +258,7 @@ Run only the visual suite:
 .\.venv-e2e\Scripts\python.exe -m unittest e2e.test_visual -v
 ```
 
-Visual tests cover public, Guest, Manager, and Admin pages at desktop and mobile sizes. Screenshots are written to `e2e/artifacts/`, which is intentionally ignored by Git.
+Visual tests cover public, Guest, Manager, and Admin pages at desktop and mobile sizes. Screenshots are saved in `e2e/artifacts/` for local review.
 
 To watch the functional browser tests instead of using headless Chrome:
 
@@ -298,20 +298,18 @@ If necessary, recreate it:
 docker compose up -d --build --force-recreate frontend
 ```
 
-## Data and security notes
+## Security and production notes
 
-- Docker stores MySQL data in the named `mysql_data` volume.
-- Uploaded development media, local databases, screenshots, environment files, and dependency folders are ignored by Git.
-- Authorization is enforced by the API. Guests cannot modify rooms or amenities, managers can modify only their own hotel's resources, and direct generic booking changes are restricted.
-- Wallet payments are accepted only for pending bookings. Database transactions and row locks protect booking availability, wallet balances, and loyalty-point updates against duplicate or concurrent writes.
-- Registration, password changes, and password resets use Django's server-side password validators.
-- Authentication and public write endpoints are rate-limited. Access tokens last 15 minutes by default; refresh tokens rotate and are blacklisted after rotation or logout.
-- Hotel uploads accept JPEG, PNG, and WebP images up to 5 MB by default. Pillow also validates that uploaded content is an image.
-- The top-up form is a demonstration flow. Card fields are validated only in the browser and are never transmitted to or stored by the API. A production system must use a PCI-compliant payment provider.
-- Profile records contain personal information such as phone number, date of birth, and identity number. Use encrypted production storage and backups, least-privilege database access, retention/deletion procedures, and an appropriate privacy policy when handling real user data.
-- The browser client currently stores JWTs in `localStorage`. Short lifetimes, rotation, and revocation reduce exposure, but an `HttpOnly`, `Secure`, `SameSite` cookie design with CSRF protection is the recommended next step for a public deployment.
-- Demo passwords, signing keys, and database defaults must be replaced before deployment. Set `DJANGO_DEBUG=False`, enable HTTPS settings, restrict allowed hosts and CORS origins, and run `python manage.py check --deploy` using the production environment.
-- The included Docker configuration uses Django and Vite development servers. Deploy behind HTTPS with a production WSGI/ASGI server and reverse proxy.
+- The API enforces role and ownership rules. Guests cannot change rooms or amenities, and hotel-specific manager actions are limited to the manager's own hotel.
+- Booking payments can be made only once. Database transactions and row locks protect room availability, wallet balances, and loyalty points from conflicting updates.
+- Django's password validators are used during registration, password changes, and password resets.
+- Login, password-reset, and other sensitive endpoints are rate-limited. Access tokens last 15 minutes by default, and refresh tokens rotate and are revoked after use or logout.
+- Hotel images are limited to JPEG, PNG, and WebP files up to 5 MB by default.
+- Wallet top-ups are simulated. Card details stay in the browser and are never sent to the API or stored. A real deployment would use a PCI-compliant payment provider.
+- Guest profiles contain personal data, including phone numbers, dates of birth, and identity numbers. A public deployment should use encrypted storage and backups, restricted database access, a retention policy, and a privacy policy.
+- JWTs are currently stored in `localStorage`. A public deployment should move them to `HttpOnly`, `Secure`, `SameSite` cookies and add the corresponding CSRF protection.
+- Before deployment, replace all demo credentials and development defaults, disable Django debug mode, enable HTTPS settings, and restrict allowed hosts and CORS origins. Run `python manage.py check --deploy` with the production environment loaded.
+- The Docker Compose setup is intended for local development. Production hosting should use a WSGI or ASGI server behind an HTTPS reverse proxy.
 
 ## License
 
