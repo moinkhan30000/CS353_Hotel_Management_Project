@@ -12,9 +12,9 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Amenity, Booking, Hotel, LoyaltyMembership, Report, Review, Room, Transaction, Wallet
+from .models import Amenity, Booking, Hotel, HotelImage, LoyaltyMembership, Report, Review, Room, Transaction, Wallet
 from .permissions import IsAdminRole, IsGuestRole, IsManagerRole
-from .serializers import AmenitySerializer, BookingSerializer, HotelImageSerializer, HotelSerializer, LoginSerializer, PasswordResetConfirmSerializer, RegistrationSerializer, ReportSerializer, ReviewSerializer, RoomSerializer, UserSerializer, WalletSerializer
+from .serializers import AmenitySerializer, BookingSerializer, HotelImageSerializer, HotelSerializer, LoginSerializer, PasswordChangeSerializer, PasswordResetConfirmSerializer, RegistrationSerializer, ReportSerializer, ReviewSerializer, RoomSerializer, UserSerializer, WalletSerializer
 
 User = get_user_model()
 
@@ -58,6 +58,11 @@ class HotelViewSet(viewsets.ModelViewSet):
             self.permission_denied(self.request)
         serializer.save()
 
+    def perform_destroy(self, instance):
+        if instance.manager != self.request.user and self.request.user.role != User.Role.ADMIN:
+            self.permission_denied(self.request)
+        instance.delete()
+
     @action(detail=False, methods=['get'], permission_classes=[IsManagerRole])
     def mine(self, request):
         hotel = Hotel.objects.filter(manager=request.user).first()
@@ -79,6 +84,16 @@ class AmenityViewSet(viewsets.ModelViewSet):
     serializer_class = AmenitySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        if self.request.user.role not in (User.Role.MANAGER, User.Role.ADMIN):
+            self.permission_denied(self.request)
+        serializer.save()
+
+    def perform_update(self, serializer):
+        if self.request.user.role not in (User.Role.MANAGER, User.Role.ADMIN):
+            self.permission_denied(self.request)
+        serializer.save()
+
 
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
@@ -93,6 +108,17 @@ class RoomViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if self.request.user.role != User.Role.MANAGER:
             self.permission_denied(self.request)
+        serializer.save(hotel=self.request.user.hotel)
+
+
+class HotelImageViewSet(viewsets.ModelViewSet):
+    serializer_class = HotelImageSerializer
+    permission_classes = [IsManagerRole]
+
+    def get_queryset(self):
+        return HotelImage.objects.filter(hotel__manager=self.request.user)
+
+    def perform_create(self, serializer):
         serializer.save(hotel=self.request.user.hotel)
 
 
@@ -147,7 +173,20 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Review.objects.select_related('guest', 'hotel', 'booking')
         hotel = self.request.query_params.get('hotel')
+        if self.request.user.is_authenticated and self.request.user.role == User.Role.MANAGER:
+            return queryset.filter(hotel__manager=self.request.user)
+        if self.request.user.is_authenticated and self.request.user.role == User.Role.GUEST and not hotel:
+            return queryset.filter(guest=self.request.user)
         return queryset.filter(hotel_id=hotel) if hotel else queryset
+
+    def perform_update(self, serializer):
+        review = serializer.instance
+        if self.request.user.role == User.Role.MANAGER:
+            serializer.save(response=self.request.data.get('response', review.response))
+        elif review.guest == self.request.user:
+            serializer.save()
+        else:
+            self.permission_denied(self.request)
 
 
 @api_view(['GET'])
@@ -161,6 +200,24 @@ def health(request):
 def wallet(request):
     value, _ = Wallet.objects.get_or_create(user=request.user)
     return Response(WalletSerializer(value).data)
+
+
+@api_view(['GET'])
+@permission_classes([IsGuestRole])
+def loyalty(request):
+    value, _ = LoyaltyMembership.objects.get_or_create(user=request.user)
+    return Response({'level': value.level, 'points': value.points, 'conversion_rate': value.conversion_rate})
+
+
+@api_view(['POST'])
+def change_password(request):
+    serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    if not request.user.check_password(serializer.validated_data['old_password']):
+        return Response({'detail': 'Current password is incorrect.'}, status=400)
+    request.user.set_password(serializer.validated_data['new_password'])
+    request.user.save(update_fields=['password'])
+    return Response({'detail': 'Password updated successfully.'})
 
 
 @api_view(['POST'])
@@ -178,6 +235,27 @@ def top_up(request):
     value.save()
     Transaction.objects.create(wallet=value, amount=amount, transaction_type=Transaction.Type.TOP_UP, method='card')
     return Response(WalletSerializer(value).data)
+
+
+@api_view(['POST'])
+@permission_classes([IsGuestRole])
+@transaction.atomic
+def redeem_points(request):
+    try:
+        points = int(request.data.get('points', 0))
+    except (TypeError, ValueError):
+        return Response({'detail': 'Enter a valid number of points.'}, status=400)
+    membership, _ = LoyaltyMembership.objects.get_or_create(user=request.user)
+    if points <= 0 or points > membership.points:
+        return Response({'detail': 'Not enough loyalty points.'}, status=400)
+    wallet, _ = Wallet.objects.get_or_create(user=request.user)
+    amount = Decimal(points) * membership.conversion_rate
+    membership.points -= points
+    membership.save()
+    wallet.balance += amount
+    wallet.save()
+    transaction_value = Transaction.objects.create(wallet=wallet, amount=amount, transaction_type=Transaction.Type.REDEEM, points_used=points)
+    return Response({'points': membership.points, 'balance': wallet.balance, 'transaction_id': transaction_value.id, 'amount': amount})
 
 
 @api_view(['POST'])

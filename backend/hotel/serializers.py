@@ -10,10 +10,32 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    date_of_birth = serializers.DateField(source='guest_profile.date_of_birth', required=False)
+    identity_number = serializers.CharField(source='guest_profile.identity_number', required=False)
+    gender = serializers.CharField(source='guest_profile.gender', required=False, allow_blank=True)
+
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number', 'role')
-        read_only_fields = ('id', 'role')
+        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'date_of_birth', 'identity_number', 'gender')
+        read_only_fields = ('id', 'role', 'identity_number')
+
+    def update(self, instance, validated_data):
+        guest_data = validated_data.pop('guest_profile', {})
+        instance = super().update(instance, validated_data)
+        if guest_data and hasattr(instance, 'guest_profile'):
+            for key, value in guest_data.items():
+                setattr(instance.guest_profile, key, value)
+            instance.guest_profile.save()
+        return instance
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate_new_password(self, value):
+        validate_password(value, self.context['request'].user)
+        return value
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -79,7 +101,8 @@ class HotelImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HotelImage
-        fields = ('id', 'image', 'image_url', 'url', 'uploaded_at')
+        fields = ('id', 'hotel', 'image', 'image_url', 'url', 'uploaded_at')
+        read_only_fields = ('hotel',)
 
     def get_url(self, obj):
         if obj.image:

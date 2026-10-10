@@ -4,7 +4,7 @@ import './ManagerDashboard.css';
 import './GuestDashboard.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { api } from '../services/api';
+import { api, currentUser } from '../services/api';
 
 type Status = 'pending' | 'confirmed' | 'cancelled';
 
@@ -22,6 +22,7 @@ interface Reservation {
 
 const GuestReservationHistory = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const user = currentUser();
 
   useEffect(() => {
     api<Array<{ id: number; created_at: string; guests: unknown[]; hotel: { name: string }; status: Status; amount_due: string; check_in: string; check_out: string }>>('/bookings/')
@@ -88,7 +89,7 @@ const GuestReservationHistory = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>

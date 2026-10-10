@@ -15,11 +15,9 @@ const HeroSection = () => {
       alert('Please enter a location');
       return;
     }
-    // Navigate to /properties with location query param
     navigate(`/properties?search=${encodeURIComponent(location)}`);
   };
 
-  // Set min date for check-in and check-out inputs
   const today = new Date().toISOString().split('T')[0];
 
   return (

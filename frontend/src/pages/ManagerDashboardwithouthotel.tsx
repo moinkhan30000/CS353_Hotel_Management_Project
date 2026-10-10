@@ -2,14 +2,16 @@ import  { useState } from 'react';
 import './ManagerDashboardwithouthotel.css';
 import Footer from '../components/Footer/Footer'; 
 import { useNavigate } from 'react-router-dom';
+import { currentUser, logout } from '../services/api';
 
 const ManagerDashboardwoHotel = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const user = currentUser();
 
   const handleLogout = () => {
 
-    localStorage.removeItem('hotelRegistered');
+    logout();
     navigate('/');
   };
 
@@ -22,7 +24,7 @@ const ManagerDashboardwoHotel = () => {
         <div className="manager-header-right">
           <span className="manager-header-home" onClick={() => navigate('/managerdashboard')}>Home</span>
           <div className="manager-user" onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <span>Moin Khan</span>
+            <span>{user ? `${user.first_name} ${user.last_name}` : 'Manager'}</span>
             <span>👤</span>
             {dropdownOpen && (
               <div className="manager-dropdown">
@@ -56,7 +58,7 @@ const ManagerDashboardwoHotel = () => {
             <div className="manager-account-box">
               <h2>Manage Account</h2>
               <ul>
-                <li><a href="#">Personal Details</a></li>
+                <li><a href="/managerprofile">Personal Details</a></li>
               </ul>
             </div>
           </div>

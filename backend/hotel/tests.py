@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from .models import Booking, Hotel, ManagerProfile, Room, User, Wallet
+from .models import Booking, Hotel, LoyaltyMembership, ManagerProfile, Review, Room, User, Wallet
 
 
 class HotelApiTests(APITestCase):
@@ -45,3 +45,23 @@ class HotelApiTests(APITestCase):
         self.authenticate('guest@test.local', 'Guest123!')
         response = self.client.post('/api/v1/bookings/', {'room': self.room.id, 'check_in': check_in, 'check_out': check_in + timedelta(days=1)}, format='json')
         self.assertEqual(response.status_code, 400)
+
+    def test_guest_can_top_up_and_redeem_loyalty_points(self):
+        LoyaltyMembership.objects.create(user=self.guest, points=500, conversion_rate=Decimal('0.10'))
+        self.authenticate('guest@test.local', 'Guest123!')
+        top_up = self.client.post('/api/v1/wallet/top-up/', {'amount': '50.00'})
+        self.assertEqual(top_up.status_code, 200)
+        redeemed = self.client.post('/api/v1/loyalty/redeem/', {'points': 100})
+        self.assertEqual(redeemed.status_code, 200)
+        self.assertEqual(redeemed.data['points'], 400)
+        self.guest.wallet.refresh_from_db()
+        self.assertEqual(self.guest.wallet.balance, Decimal('1060.00'))
+
+    def test_manager_can_reply_to_own_hotel_review(self):
+        booking = Booking.objects.create(guest=self.guest, room=self.room, check_in=date.today(), check_out=date.today() + timedelta(days=1), status='confirmed', amount_due=Decimal('100.00'))
+        review = Review.objects.create(booking=booking, hotel=self.hotel, guest=self.guest, text='Great stay', rating=9)
+        self.authenticate('manager@test.local', 'Manager123!')
+        response = self.client.patch(f'/api/v1/reviews/{review.id}/', {'response': 'Thank you'}, format='json')
+        self.assertEqual(response.status_code, 200)
+        review.refresh_from_db()
+        self.assertEqual(review.response, 'Thank you')

@@ -4,7 +4,7 @@ import './GuestDashboard.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
+import { api, currentUser } from '../services/api';
 
 const GuestTopUpPage = () => {
   const [amount, setAmount] = useState('');
@@ -17,6 +17,7 @@ const GuestTopUpPage = () => {
 
   const [currentBalance, setCurrentBalance] = useState(0);
   const [transactionId, setTransactionId] = useState('');
+  const user = currentUser();
 
   useEffect(() => {
     api<{ balance: string }>('/wallet/').then(value => setCurrentBalance(Number(value.balance))).catch(err => toast.error(err instanceof Error ? err.message : 'Unable to load wallet.'));
@@ -86,7 +87,7 @@ const GuestTopUpPage = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>

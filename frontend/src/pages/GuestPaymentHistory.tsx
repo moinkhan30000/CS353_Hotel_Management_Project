@@ -3,7 +3,7 @@ import Footer from '../components/Footer/Footer';
 import './ManagerDashboard.css';
 import './GuestDashboard.css';
 import './GuestPaymentHistory.css';
-import { api } from '../services/api';
+import { api, currentUser } from '../services/api';
 
 interface Transaction {
   id: number;
@@ -14,6 +14,7 @@ interface Transaction {
 
 const GuestPaymentHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const user = currentUser();
 
   useEffect(() => {
     api<{ transactions: Transaction[] }>('/wallet/').then(value => setTransactions(value.transactions));
@@ -33,7 +34,7 @@ const GuestPaymentHistory = () => {
           <nav className="dashboard-nav">
             <a href="/guest-dashboard" className="nav-link">Home</a>
             <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
+              <span className="user-name">{user ? `${user.first_name} ${user.last_name}` : 'Guest'}</span>
             </div>
           </nav>
         </header>

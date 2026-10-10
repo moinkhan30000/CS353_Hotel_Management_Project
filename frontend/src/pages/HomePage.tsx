@@ -1,24 +1,24 @@
-import { useState } from 'react';
 import Header from '../components/Header/Header';
-import PrivateHeader from '../components/PrivateHeader/PrivateHeader'; // Your private header
+import PrivateHeader from '../components/PrivateHeader/PrivateHeader';
 import HeroSection from '../components/HeroSection/HeroSection';
 import WhyChooseUs from '../components/WhyChooseUs/WhyChooseUs';
 import TopBookNow from '../components/TopBookNow/TopBookNow';
 import PromoSection from '../components/PromoSection/PromoSection';
 import Footer from '../components/Footer/Footer';
+import { currentUser, logout } from '../services/api';
 
 const HomePage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const username = "Moin Khan"; 
+  const user = currentUser();
+  const username = user ? `${user.first_name} ${user.last_name}`.trim() || user.email : '';
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-
+    logout();
+    window.location.reload();
   };
 
   return (
     <>
-      {isLoggedIn ? (
+      {user ? (
         <PrivateHeader username={username} onLogout={handleLogout} />
       ) : (
         <Header />

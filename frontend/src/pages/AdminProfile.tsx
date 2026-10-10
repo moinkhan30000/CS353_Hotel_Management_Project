@@ -1,43 +1,13 @@
-import "./AdminProfile.css";
+import { useEffect, useState } from 'react';
 import Footer from '../components/Footer/Footer';
+import { api, type CurrentUser } from '../services/api';
+import './AdminProfile.css';
+
 const AdminProfile = () => {
-  return (
-    <div className="profile-page">
-      <header className="profile-header">
-        <div className="logo">HORIZONSTAY</div>
-        <nav>
-          <a href="/">Logout</a>
-          <a href="/admindashboard">Dashboard</a>
-          <a href="/contact">Contact</a>
-        </nav>
-        <div className="profile-user">
-          <span>Moin Khan</span>
-          <div className="user-icon">👤</div>
-        </div>
-      </header>
-
-      <div className="profile-content">
-        <h1>Welcome</h1>
-        <div className="profile-card">
-          <h2>Administrator Profile Details</h2>
-          <div className="profile-field">Username</div>
-          <div className="profile-field">Email</div>
-          <div className="profile-field">Hotel Name</div>
-          <div className="profile-field">Phone Number</div>
-          <div className="profile-field">Address</div>
-          <div className="profile-field">Country</div>
-          <div className="profile-field">City</div>
-          <div className="profile-field">Password</div>
-
-          <div className="button-group">
-            <button className="edit-btn">Edit</button>
-            <button className="access-btn">Access Level</button>
-          </div>
-        </div>
-      </div>
-      <Footer />
-    </div>
-  );
+  const [profile, setProfile] = useState<CurrentUser | null>(null); const [editing, setEditing] = useState(false);
+  useEffect(() => { api<CurrentUser>('/profile/').then(setProfile); }, []);
+  const save = async () => { if (!profile) return; const saved = await api<CurrentUser>('/profile/', { method: 'PATCH', body: JSON.stringify(profile) }); setProfile(saved); localStorage.setItem('currentUser', JSON.stringify(saved)); setEditing(false); };
+  if (!profile) return <p>Loading profile...</p>;
+  return <div className="profile-page"><header className="profile-header"><h1>HORIZONSTAY</h1><span>{profile.first_name} {profile.last_name}</span></header><main className="profile-main"><h2>Admin Profile</h2>{(['first_name', 'last_name', 'email', 'phone_number'] as const).map(key => <div className="profile-row" key={key}><label>{key.replace(/_/g, ' ')}</label>{editing ? <input value={profile[key] ?? ''} onChange={event => setProfile({ ...profile, [key]: event.target.value })} /> : <span>{profile[key] || '—'}</span>}</div>)}<button onClick={editing ? save : () => setEditing(true)}>{editing ? 'Save' : 'Edit'}</button></main><Footer /></div>;
 };
-
 export default AdminProfile;

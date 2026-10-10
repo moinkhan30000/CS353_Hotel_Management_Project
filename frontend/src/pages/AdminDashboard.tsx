@@ -20,7 +20,7 @@ const AdminDashboard = () => {
         <div className="logo">HORIZONSTAY</div>
         <nav className="nav-links">
           <a href="/" onClick={logout}>Logout</a>
-          <a href="#">Hotels</a>
+          <a href="/properties">Hotels</a>
         </nav>
         <div className="profile">
           <span className="profile-name">{user ? `${user.first_name} ${user.last_name}` : 'Administrator'}</span>

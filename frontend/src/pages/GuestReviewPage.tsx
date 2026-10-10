@@ -1,152 +1,37 @@
-import { useState } from 'react';
-import Footer from '../components/Footer/Footer';
-import './ManagerDashboard.css';
-import './GuestDashboard.css';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Footer from '../components/Footer/Footer';
+import { api } from '../services/api';
+import './GuestDashboard.css';
 
-interface ReviewableBooking {
-  bookingId: string;
-  bookingDate: string;
-  hotelName: string;
-  review?: string;
-  rating?: number;
-}
+interface Booking { id: number; created_at: string; status: string; hotel: { name: string }; review?: Review }
+interface Review { id: number; booking: number; text: string; rating: number }
 
 const GuestReviewPage = () => {
-  const [bookings, setBookings] = useState<ReviewableBooking[]>([
-    { bookingId: 'R12345', bookingDate: '2025-05-01', hotelName: 'Oasis Hotel' },
-    { bookingId: 'R12348', bookingDate: '2025-04-20', hotelName: 'Istanbul Hotel' },
-  ]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [text, setText] = useState('');
+  const [rating, setRating] = useState(1);
+  const [editing, setEditing] = useState<Booking | null>(null);
 
-  const [currentReview, setCurrentReview] = useState('');
-  const [currentRating, setCurrentRating] = useState<number>(0);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingId, setPendingId] = useState<string | null>(null);
+  useEffect(() => {
+    Promise.all([api<Booking[]>('/bookings/'), api<Review[]>('/reviews/')]).then(([items, reviews]) => setBookings(items.filter(item => item.status === 'confirmed').map(item => ({ ...item, review: reviews.find(review => review.booking === item.id) }))));
+  }, []);
 
-  const triggerConfirm = (id: string) => {
-    if (currentRating < 0 || currentRating > 10) {
-      toast.error('Rating must be a number between 0 and 10.');
-      return;
-    }
-    setPendingId(id);
-    setShowConfirm(true);
+  const save = async () => {
+    if (!editing || rating < 1 || rating > 10 || !text.trim()) return toast.error('Enter a review and a rating from 1 to 10.');
+    const review = await api<Review>(editing.review ? `/reviews/${editing.review.id}/` : '/reviews/', { method: editing.review ? 'PATCH' : 'POST', body: JSON.stringify({ booking: editing.id, text, rating }) });
+    setBookings(items => items.map(item => item.id === editing.id ? { ...item, review } : item));
+    setEditing(null);
+    toast.success('Review saved.');
   };
 
-  const handleReview = () => {
-    if (!pendingId) return;
-    const updated = bookings.map(b =>
-      b.bookingId === pendingId ? { ...b, review: currentReview, rating: currentRating } : b
-    );
-    setBookings(updated);
-    setEditingId(null);
-    setCurrentReview('');
-    setCurrentRating(0);
-    setShowConfirm(false);
-    setPendingId(null);
-  };
-
-  return (
-    <div className="page-wrapper">
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <div className="header-left">
-            <h1 className="brand">HORIZONSTAY</h1>
-          </div>
-          <nav className="dashboard-nav">
-            <a href="/guest-dashboard" className="nav-link">Home</a>
-            <div className="user-info">
-              <span className="user-name">Moin Khan ▼</span>
-            </div>
-          </nav>
-        </header>
-
-        <main className="dashboard-main styled-background">
-          <h2 className="dashboard-title">Hotel Reviews</h2>
-
-          <div className="payment-history-container">
-            <div className="payment-history-header">
-              Booking Id | Booking Date | Hotel Name
-            </div>
-            {bookings.map((b, idx) => (
-              <div key={idx} className="transaction-row">
-                <div style={{ flex: 1 }}>
-                  {b.bookingId} | {b.bookingDate} | {b.hotelName}
-                  {b.review && (
-                    <div>
-                      <strong>Review:</strong> {b.review}<br />
-                      <strong>Rating:</strong> {b.rating?.toFixed(1)}/10
-                    </div>
-                  )}
-                </div>
-                {editingId === b.bookingId ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <textarea
-                      value={currentReview}
-                      onChange={e => setCurrentReview(e.target.value)}
-                      placeholder="Write your review..."
-                      rows={3}
-                      style={{ borderRadius: '1rem', padding: '0.5rem' }}
-                    />
-                    <label>
-                      Rating (0–10):
-                      <input
-                        type="number"
-                        step="0.1"
-                        min={0}
-                        max={10}
-                        value={currentRating}
-                        onChange={e => setCurrentRating(parseFloat(e.target.value))}
-                        style={{ marginLeft: '0.5rem', padding: '0.25rem', borderRadius: '0.5rem', width: '80px' }}
-                      />
-                    </label>
-                    <button className="pay-button" onClick={() => triggerConfirm(b.bookingId)}>
-                      Submit Review
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    className="cancel-button"
-                    onClick={() => {
-                      setEditingId(b.bookingId);
-                      setCurrentReview(b.review || '');
-                      setCurrentRating(b.rating || 0);
-                    }}
-                  >
-                    {b.review ? 'Edit Review' : 'Add Review'}
-                  </button>
-                )}
-              </div>
-            ))}
-
-            <div className="payment-history-actions">
-              <button className="close-button" onClick={() => window.location.href='/guest-dashboard'}>
-                Back
-              </button>
-            </div>
-          </div>
-
-          {showConfirm && (
-            <div className="modal-overlay">
-              <div className="modal-box">
-                <h3>Confirm Submission</h3>
-                <p>
-                  Submit your review with a rating of <strong>{currentRating}/10</strong>?
-                </p>
-                <div className="modal-actions">
-                  <button className="pay-button" onClick={handleReview}>Yes, Submit</button>
-                  <button className="close-button" onClick={() => setShowConfirm(false)}>Cancel</button>
-                </div>
-              </div>
-            </div>
-          )}
-        </main>
-
-        <Footer />
-      </div>
-    </div>
-  );
+  return <div className="page-wrapper"><div className="dashboard-container"><main className="dashboard-main styled-background">
+    <h2 className="dashboard-title">Hotel Reviews</h2><div className="payment-history-container">
+      {bookings.map(booking => <div className="transaction-row" key={booking.id}><div style={{ flex: 1 }}>{booking.id} | {booking.created_at.slice(0, 10)} | {booking.hotel.name}{booking.review && <div><strong>Review:</strong> {booking.review.text}<br /><strong>Rating:</strong> {booking.review.rating}/10</div>}</div>
+        <button className="cancel-button" onClick={() => { setEditing(booking); setText(booking.review?.text ?? ''); setRating(booking.review?.rating ?? 1); }}>{booking.review ? 'Edit Review' : 'Add Review'}</button></div>)}
+      {editing && <div className="transaction-row"><textarea value={text} onChange={event => setText(event.target.value)} /><input type="number" min="1" max="10" value={rating} onChange={event => setRating(Number(event.target.value))} /><button className="pay-button" onClick={save}>Save</button></div>}
+      <div className="payment-history-actions"><button className="close-button" onClick={() => window.location.href='/guest-dashboard'}>Back</button></div>
+    </div></main><Footer /></div></div>;
 };
 
 export default GuestReviewPage;

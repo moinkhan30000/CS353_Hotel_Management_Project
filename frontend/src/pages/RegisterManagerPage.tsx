@@ -50,7 +50,6 @@ const RegisterManagerPage = () => {
       return;
     }
 
-    // ✅ Valid - show toast and redirect
     try {
       await api('/auth/register/', {
         method: 'POST',

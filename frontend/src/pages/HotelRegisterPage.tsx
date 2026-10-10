@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './HotelRegisterPage.css';
@@ -35,12 +35,6 @@ const HotelRegisterPage = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    if (images.length > 0) {
-      console.log(`${images.length} images selected.`);
-    }
-  }, [images]);
-
   const handleAddAmenity = () => {
     const trimmed = newAmenity.trim();
     if (trimmed && !amenities.includes(trimmed)) {
